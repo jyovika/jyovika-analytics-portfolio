@@ -204,3 +204,26 @@ boot_results <- map_dfr(1:n_boot, function(i) {
 })
 ```
 
+```{r bootstrap_summary}
+boot_results %>%
+  summarise(
+    mean_est = mean(beta_pit, na.rm = TRUE),
+    ci_low = quantile(beta_pit, 0.025, na.rm = TRUE),
+    ci_high = quantile(beta_pit, 0.975, na.rm = TRUE)
+  )
+```
+
+```{r bootstrap_plot}
+boot_results %>%
+  ggplot(aes(beta_pit)) +
+  geom_histogram(bins = 40, fill = "dodgerblue2", alpha = 0.6, color = "white") +
+  geom_vline(aes(xintercept = mean(beta_pit)), color = "red", linewidth = 1.2) +
+  labs(
+    title = "Bootstrap distribution of the pit-time effect",
+    subtitle = "Estimated change in finishing position per additional second spent in the pit lane",
+    x = "Coefficient for pit time (positions per second)",
+    y = "Frequency"
+  ) +
+  theme_minimal()
+
+```

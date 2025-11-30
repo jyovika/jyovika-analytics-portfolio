@@ -171,7 +171,11 @@ damage, a hold at the release, a penalty or time lost behind cars entering or le
 
 ## Regression: How much does a second cost?
 
-```{r, regression_table, warning=FALSE, echo=FALSE}
+```{r, regression_table, warning=FALSE, echo=FALSE,message=FALSE}
+
+model_f1 <- lm( positionOrder ~ best_pit_sec + grid + constructor, 
+                data = driver_race_df)
+
 tidy(model_f1, conf.int = TRUE) %>%
   filter(term %in% c("best_pit_sec", "grid")) %>%
   select(term, estimate, conf.low, conf.high, p.value) %>%
@@ -342,6 +346,22 @@ team_sensitivity <- driver_race_df %>%
     correlation = cor(best_pit_sec, positionOrder, use = "complete.obs")
   ) %>%
   arrange(desc(correlation))
+
+team_sensitivity %>%
+  kable(
+    caption = "Correlation between pit stop time and finishing position by team",
+    col.names = c("Team","Correlation"),
+    digits = 5,
+    align = c("c","c")
+  ) %>%
+  kable_styling(
+    bootstrap_options = c("condensed","striped"),
+    full_width = FALSE,
+    position = "center",
+    font_size = 14
+  ) %>%
+  row_spec(0, bold = TRUE, color = "white", background = "#4F6D7A")
+
 ```
 
 ```{r, echo=FALSE}

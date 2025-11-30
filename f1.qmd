@@ -308,7 +308,7 @@ By 2015, the effect had softened, which reflects increased operational consisten
 From 2019 onward, the influence sits around 0.10 to 0.15, small on paper but significant when margins are measured in tenths.
 One second used to break a race. Today it dents it. In a tight field, even dents matter.
 
-## Run per-constructor regression
+## Which teams suffer most?
 
 ```{r}
 team_sensitivity <- driver_race_df %>%
@@ -337,11 +337,17 @@ team_sensitivity %>%
     axis.title.y = element_text(face = "bold"),
     panel.grid.minor = element_blank())
 ```
-Not every team pays the same price for a slow pit stop.
+Not every team pays the same price for a slow stop.
 
-Teams like Haas, Force India and HRT show a strong positive relationship between pit time and finishing position.
+Midfield and backmarker teams such as Haas, Force India and Manor or Marussia tend to lose the most. When they fall behind, they often lack the pace to recover.
 
-A slow stop usually sends them backwards because they do not have the race pace to erase the lost time. Midfield groups like Lotus/Renault/Alpine and Manor/Marussia show similar sensitivity. Their margin for error is small, so time wasted in the pit lane becomes time they never get back.
+Top teams like Red Bull, Ferrari and Mercedes are more resilient. A slow stop hurts, but strong race pace lets them fight back. A delay becomes a setback, not a death sentence.
 
-At the top end of the grid, Red Bull, Mercedes and Ferrari barely move with pit duration.
-A slow stop still hurts, but their underlying pace allows them to recover. A mistake is a setback, not a race-ending blow.
+Slow stops do not destroy the fast. They destroy the fragile.
+
+##  Conclusion
+Pit stops matter, but not always in the dramatic way commentary suggests. One second typically costs less than a tenth of a finishing place but the impact becomes powerful when repeated across races, seasons or drivers.
+
+Grid position remains the strongest determinant of outcome and race pace is the engine of everything. Pit crews are not out to perform miracles, they are fighting to avoid thousands of small cuts.
+
+In Formula One, fractions are currency, and pit time is one of them.

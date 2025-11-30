@@ -1,0 +1,27 @@
+---
+title: "Jyovika Aswale"
+image: profile.jpg          
+about:
+  template: trestles   
+  image-shape: round
+  links:
+    - icon: github
+      text: "GitHub"
+      href: https://github.com/jyovika   
+    - icon: linkedin
+      text: "LinkedIn"
+      href: https://www.linkedin.com/in/jyovika-aswale-994344299/
+    - icon: envelope
+      text: "Email"
+      href: mailto:jasw0002@monash.student.edu
+
+---
+
+## About Me
+
+I am currently completing a Master of Business Analytics at **Monash University**, building on my undergraduate studies in **Economics**.  
+My academic journey has strengthened my skills in data analysis, interpretation, and communication, and I am particularly interested in how analytical tools can inform evidence-based decisions in health, policy, and business.
+
+I am developing proficiency in **R, Python, Quarto, and GitHub**, with a focus on reproducible workflows and clear data communication. Through projects and coursework, I have enjoyed working on tasks that involve cleaning and transforming complex datasets, creating effective visualisations, and presenting insights in a way that is accessible to different audiences.
+
+Outside of university, I prioritise health and balance- I train regularly and keep learning about nutrition. I also enjoy hands-on creative work, like building LEGO or cooking, and I unwind by rewatching a few of my favourite series.

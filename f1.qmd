@@ -29,6 +29,7 @@ We’re answering one question:
 
 ## Libraries
 ```{r, libraries, message=FALSE}
+set.seed(44)
 library(tidyverse)
 library(broom)     
 library(rsample)   
@@ -100,8 +101,42 @@ combined_2019 <- combined_df %>%
 
 combined_2024 <- combined_df %>%
   filter(year == 2024, milliseconds <= 50000)
-
 ```
+
+### Team mapping 
+
+```{r}
+team_map <- tribble(
+  ~name, ~team,
+  "Ferrari",              "Ferrari",
+  "Mercedes",             "Mercedes",
+  "Red Bull",             "Red Bull",
+  "RB F1 Team",           "AlphaTauri/Toro Rosso/RB",
+  "Toro Rosso",           "AlphaTauri/Toro Rosso/RB",
+  "AlphaTauri",           "AlphaTauri/Toro Rosso/RB",
+  "Williams",             "Williams",
+  "McLaren",              "McLaren",
+  "Lotus",                "Lotus/Renault/Alpine",
+  "Lotus F1",             "Lotus/Renault/Alpine",
+  "Renault",              "Lotus/Renault/Alpine",
+  "Alpine F1 Team",       "Lotus/Renault/Alpine",
+  "Sauber",               "Sauber/Alfa Romeo",
+  "Alfa Romeo",           "Sauber/Alfa Romeo",
+  "Manor Marussia",       "Manor/Marussia",
+  "Marussia",             "Manor/Marussia",
+  "Manor",                "Manor/Marussia",
+  "HRT",                  "HRT",
+  "Aston Martin",         "Racing Point/Aston Martin",
+  "Racing Point",         "Racing Point/Aston Martin",
+  "Haas F1 Team",         "Haas",
+  "Force India",          "Force India",
+  "Virgin",               "Virgin")
+
+driver_race_df <- driver_race_df %>%
+  left_join(team_map, by = c("constructor" = "name"))  %>%
+  mutate(team = ifelse(is.na(team), constructor, team))
+```
+
 
 ## Exploratory analysis
 ```{r}
@@ -171,7 +206,6 @@ driver_race_df %>%
     plot.title = element_text(face = "plain"),
     panel.grid.minor = element_blank())
 
-
 ```
 
 When we fit a regression to finishing position, total pit time turns out to have a measurable, but not overwhelming effect.
@@ -188,8 +222,6 @@ Starting one place further back equates to losing almost half a position at the 
 ## Bootstrapping to confirm results
 
 ```{r bootstrap}
-set.seed(44)
-
 n_boot <- 1000
 n <- nrow(driver_race_df)
 
@@ -287,3 +319,34 @@ In 2011, every additional second in the pit lane carried the highest penalty, wi
 By 2015, that penalty dropped sharply. Pit stop operations were more efficient and the field was more spread out, which meant drivers could absorb small mistakes better.
 
 From 2019 onward, the slope rises slightly then settles into a stable band. A slow stop still hurts, and the impact sits near 0.10 to 0.15 positions lost per second. This looks small on paper, but in a sport where gaps are measured in tenths, it remains a meaningful advantage for teams who can execute consistently fast stops.
+
+## Run per-constructor regression
+
+```{r}
+team_sensitivity <- driver_race_df %>%
+  group_by(team) %>%
+  summarise(
+    correlation = cor(best_pit_sec, positionOrder, use = "complete.obs")
+  ) %>%
+  arrange(desc(correlation))
+```
+
+```{r}
+team_sensitivity %>%
+  mutate(constructor = fct_reorder(team, correlation)) %>%
+  ggplot(aes(team, correlation)) +
+  geom_col(fill = "#ff695e", alpha = 0.8) +
+  coord_flip() +
+  labs(
+    title = "Which teams suffer most from slow pit stops?",
+    subtitle = "Correlation between pit time and finishing position",
+    x = "Constructor",
+    y = "Sensitivity to pit-stop time") +
+  
+  theme_minimal(base_size = 13) +
+  theme(
+    plot.title = element_text(face = "bold"),
+    axis.title.y = element_text(face = "bold"),
+    panel.grid.minor = element_blank())
+```
+

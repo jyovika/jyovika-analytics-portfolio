@@ -1,30 +1,35 @@
 ---
 title: "Do Fast Pit Stops Win F1 Races - or Is It Just Hype?"
-format: html
-editor: visual
----
-## Introduction
-In Formula One, every tenth of a second is sacred. Commentators often claim that pit stops
-decide races, but how much does a second actually matter? Does an extra moment in the pit
-lane truly push a driver down the finishing order, or is the fear larger than the effect?
+date: 2025-11-30
+categories: [R, Data Analysis, Visualisation, Formula1]
 
-I analysed pit-stop timing and race results across four seasons. My goal was simple.
-I wanted to measure the cost of one lost second.
+image: "f1-banner.jpg"
+title-block-banner: "f1-banner.jpg"
+
+description: "An R-powered exploration of Formula 1 performance, lap times, and insights."
+---
+
+## Introduction
+
+In Formula One, every tenth of a second is sacred. Commentators often claim that pit stops decide races, but how much does a second actually matter? Does an extra moment in the pit lane truly push a driver down the finishing order, or is the fear larger than the effect?
+
+I analysed pit-stop timing and race results across four seasons. My goal was simple. I wanted to measure the cost of one lost second.
 
 The results were not what I expected.
 
-Full code and reproducible scripts are available on GitHub  
-> Link: <https://github.com/jyovika/jyovika-analytics-portfolio>
+Full code and reproducible scripts are available on GitHub\
+\> Link: <https://github.com/jyovika/jyovika-analytics-portfolio>
 
-::: {.callout-note}
+::: callout-note
 ### Data Source
+
 **Ergast Formula One Archive, 2011 to 2024**
 
-CSV data retrieved from the public developer database  
+CSV data retrieved from the public developer database\
 <http://ergast.com/mrd/db/>
 
-**Tools:** R, tidyverse, ggplot2, broom, boot  
-**Licence:** Free for educational and non commercial projects  
+**Tools:** R, tidyverse, ggplot2, broom, boot\
+**Licence:** Free for educational and non commercial projects\
 More info: <http://ergast.com/mrd/terms/>
 :::
 
@@ -152,6 +157,7 @@ team_map <- tribble(
 ```
 
 ## Exploratory analysis
+
 ```{r, echo=FALSE}
 driver_race_df <- combined_df %>%
   mutate(
@@ -205,8 +211,7 @@ driver_race_df %>%
 
 ```
 
-Most full pit cycles range from 18 to 30 seconds. Anything above 35 seconds usually signals
-damage, a hold at the release, a penalty or time lost behind cars entering or leaving the pits.
+Most full pit cycles range from 18 to 30 seconds. Anything above 35 seconds usually signals damage, a hold at the release, a penalty or time lost behind cars entering or leaving the pits.
 
 ## Regression: How much does a second cost?
 
@@ -368,10 +373,7 @@ boot_results %>%
 
 ```
 
-Bootstrapping confirms that the effect is stable.
-The average value is around 0.08, with a confidence range near 0.05 to 0.11.
-Nearly every resampled model returned a positive relationship.
-Slow pit stops consistently push drivers downward.
+Bootstrapping confirms that the effect is stable. The average value is around 0.08, with a confidence range near 0.05 to 0.11. Nearly every resampled model returned a positive relationship. Slow pit stops consistently push drivers downward.
 
 ## Does the effect change over time?
 
@@ -434,10 +436,7 @@ season_effects %>%
     plot.margin = margin(10,10,10,10))
 ```
 
-In 2011, a single second was costly and often race damaging.
-By 2015, the effect had softened, which reflects increased operational consistency and a wider field spread.
-From 2019 onward, the influence sits around 0.10 to 0.15, small on paper but significant when margins are measured in tenths.
-One second used to break a race. Today it dents it. In a tight field, even dents matter.
+In 2011, a single second was costly and often race damaging. By 2015, the effect had softened, which reflects increased operational consistency and a wider field spread. From 2019 onward, the influence sits around 0.10 to 0.15, small on paper but significant when margins are measured in tenths. One second used to break a race. Today it dents it. In a tight field, even dents matter.
 
 ## Which teams suffer most?
 
@@ -502,22 +501,23 @@ Slow stops do not destroy the fast. They destroy the fragile.
 ::: {.callout-note collapse="true"}
 ### Reproducibility and code access
 
-This analysis is fully reproducible.  
+This analysis is fully reproducible.\
 All scripts for data loading, cleaning, joining, modelling and visualisation are available here:
 
 **GitHub repository:** <https://github.com/jyovika/jyovika-analytics-portfolio>
 
 Contents include:\
-• Data preparation code  
-• Regression and bootstrap models  
-• Seasonal and constructor analysis  
-• All plots and report scripts  
-• Outputs and figures  
+• Data preparation code\
+• Regression and bootstrap models\
+• Seasonal and constructor analysis\
+• All plots and report scripts\
+• Outputs and figures
 
 You are welcome to explore, fork or extend the analysis.
 :::
 
-##  Conclusion
+## Conclusion
+
 Pit stops matter, but not always in the dramatic way commentary suggests. One second typically costs less than a tenth of a finishing place but the impact becomes powerful when repeated across races, seasons or drivers.
 
 Grid position remains the strongest determinant of outcome and race pace is the engine of everything. Pit crews are not out to perform miracles, they are fighting to avoid thousands of small cuts.

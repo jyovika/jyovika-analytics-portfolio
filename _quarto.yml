@@ -1,0 +1,27 @@
+project:
+  type: website
+  output-dir: docs
+
+website:
+  title: "Jyovika Aswale"
+  navbar:
+    left:
+      - text: "Home"
+        href: about.qmd
+      - text: "Blogs"
+        href: index.qmd
+    right:
+      - icon: github
+        href: https://github.com/jyovika
+  page-footer:
+    left: "© 2025 Jyovika Aswale"
+    right: "Built with Quarto"
+
+format:
+  html:
+    theme: flatly
+    css:
+      - styles.css
+    toc: true
+    smooth-scroll: true
+    anchor-sections: true

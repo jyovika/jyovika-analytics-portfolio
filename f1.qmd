@@ -40,7 +40,6 @@ The repository contains:
 
 You are welcome to clone or fork the project and explore or extend it further.
 
-
 ```{r, libraries, message=FALSE, echo=FALSE}
 ## Libraries
 set.seed(44)
@@ -63,7 +62,6 @@ constructor_df <- read.csv(here::here("data/constructors.csv"))
 
 status_df <- read.csv(here::here("data/status.csv"))
 ```
-
 
 ```{r,data_processing, echo=FALSE}
 ## Process data
@@ -115,9 +113,8 @@ combined_2024 <- combined_df %>%
   filter(year == 2024, milliseconds <= 50000)
 ```
 
+```{r,team_mapping, echo=FALSE}
 ### Team mapping 
-
-```{r, echo=FALSE}
 team_map <- tribble(
   ~name, ~team,
   "Ferrari",              "Ferrari",
@@ -148,7 +145,6 @@ driver_race_df <- driver_race_df %>%
   left_join(team_map, by = c("constructor" = "name"))  %>%
   mutate(team = ifelse(is.na(team), constructor, team))
 ```
-
 
 ## Exploratory analysis
 ```{r}
@@ -181,23 +177,21 @@ driver_race_df %>%
   theme_minimal()
 ```
 
+Most full pit cycles range from 18 to 30 seconds. Anything above 35 seconds usually signals
+damage, a hold at the release, a penalty or time lost behind cars entering or leaving the pits.
+
 ## Regression model
 
 ```{r}
 model_f1 <- lm(
   positionOrder ~ best_pit_sec + grid + constructor,
   data = driver_race_df)
-
-summary(model_f1)
-
 ```
 
 ```{r, regression_table}
-
 tidy(model_f1, conf.int = TRUE) %>%
   filter(term %in% c("best_pit_sec", "grid")) %>%
   select(term, estimate, conf.low, conf.high, p.value)
-
 ```
 
 ```{r, regression_plot}
@@ -220,16 +214,11 @@ driver_race_df %>%
 
 ```
 
-When we fit a regression to finishing position, total pit time turns out to have a measurable, but not overwhelming effect.
+The regression shows that each extra second in the pit lane worsens finishing position by about 0.08 places on average. Slow stops therefore matter, but not in an explosive way. A delay of two or three seconds rarely destroys a race, but the effect compounds across a season.
 
-For every 1 second added to a stop, the model predicts a driver will finish about 0.08 positions worse on average.
+Small losses are harmless alone. Repeated losses change outcomes. A quarter of a place here and half a place there becomes the difference between a podium and fourth, or between finishing in the points and missing out.
 
-That means a slow stop does not usually destroy a race outright, but it does push a driver backwards.
-A three-second delay might cost just a few tenths of a finishing position, but across an entire season those tenths add up. If you lose a quarter of a place here, half a place there, it becomes the difference between P5 in the championship and P7, or between a team bonus and none.
-
-Grid position, by comparison, is far more powerful.
-
-Starting one place further back equates to losing almost half a position at the finish — a much steeper penalty than pit time. This makes intuitive sense: a fast car starting deep in the pack has a lot more work to do, regardless of how fast the crew is.
+By comparison, grid position has a far stronger effect. Starting one place further back costs nearly half a finishing position. Pit time matters, but track position matters more.
 
 ## Bootstrapping to confirm results
 

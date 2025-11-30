@@ -1,0 +1,87 @@
+---
+title: "Do Fast Pit Stops Win F1 Races - or Is It Just Hype?"
+editor: visual
+---
+---
+title: "blog"
+format: html
+editor: visual
+---
+
+## libraries
+```{r, libraries, message=FALSE}
+library(tidyverse)
+```
+
+
+## load data
+```{r, message=FALSE}
+
+pitstops_df <- read.csv(here::here("data/pit_stops.csv"))
+
+results_df <- read.csv(here::here("data/results.csv"))
+
+race_df <- read.csv(here::here("data/races.csv"))
+
+driver_df <- read.csv(here::here("data/drivers.csv"))
+
+constructor_df <- read.csv(here::here("data/constructors.csv"))
+
+status_df <- read.csv(here::here("data/status.csv"))
+```
+
+
+## process data
+```{r}
+drivers_lookup <- driver_df %>%
+      mutate(driver_full = paste(forename, surname)) %>%
+      select(driverId, driver_full)
+
+races_lookup <- race_df %>%
+      mutate(race_full = paste(name, year)) %>%
+      select(raceId, race_full, year)
+
+constructors_lookup <- constructor_df %>%
+      select(constructorId, constructor_name = name)
+    
+combined_df <- pitstops_df %>%
+  left_join(drivers_lookup, by = "driverId") %>%
+  left_join(races_lookup, by = "raceId") %>%
+  left_join(
+    results_df %>%
+      select(raceId, driverId, constructorId, positionOrder, positionText, grid, statusId),
+    by = c("raceId", "driverId")) %>%
+  
+  left_join(constructors_lookup, by = "constructorId") %>%
+  left_join(status_df, by = "statusId") %>%
+  filter(year %in% c(2011, 2015, 2019, 2024)) %>%
+  select(
+    driver = driver_full,
+    race = race_full,
+    year,
+    constructor = constructor_name,
+    stop,
+    lap,
+    duration,
+    milliseconds,
+    positionOrder,
+    grid,
+    status )
+
+combined_2011 <- combined_df %>%
+  filter(year == 2011, milliseconds <= 50000)
+
+combined_2015 <- combined_df %>%
+  filter(year == 2015, milliseconds <= 50000)
+
+combined_2019 <- combined_df %>%
+  filter(year == 2019, milliseconds <= 50000)
+
+combined_2024 <- combined_df %>%
+  filter(year == 2024, milliseconds <= 50000)
+
+```
+
+```{r}
+
+```

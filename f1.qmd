@@ -13,6 +13,9 @@ I wanted to measure the cost of one lost second.
 
 The results were not what I expected.
 
+Full code and reproducible scripts are available on GitHub  
+> Link: <https://github.com/jyovika/jyovika-analytics-portfolio>
+
 ::: {.callout-note}
 ### Data Source
 **Ergast Formula One Archive, 2011 to 2024**
@@ -25,27 +28,14 @@ CSV data retrieved from the public developer database
 More info: <http://ergast.com/mrd/terms/>
 :::
 
-## Reproducibility
-
-This analysis can be fully reproduced using the exact datasets, code and model pipeline.
-All scripts for data loading, cleaning, merging and statistical modelling are available at:
-
-**GitHub repository:** <https://github.com/jyovika/jyovika-analytics-portfolio>
-
-The repository contains: \
-• raw and cleaned data  
-• code for joins and filtering  
-• regression and bootstrap scripts  
-• plot generation code  
-
-You are welcome to clone or fork the project and explore or extend it further.
-
 ```{r, libraries, message=FALSE, echo=FALSE}
 ## Libraries
 set.seed(44)
 library(tidyverse)
 library(broom)     
-library(rsample)   
+library(rsample) 
+library(kableExtra)
+library(knitr)
 ```
 
 ```{r, load_data, message=FALSE, echo=FALSE}
@@ -181,14 +171,24 @@ damage, a hold at the release, a penalty or time lost behind cars entering or le
 
 ## Regression: How much does a second cost?
 
-```{r, regression_table, warning=FALSE}
-model_f1 <- lm(
-  positionOrder ~ best_pit_sec + grid + constructor,
-  data = driver_race_df)
-
+```{r, regression_table, warning=FALSE, echo=FALSE}
 tidy(model_f1, conf.int = TRUE) %>%
   filter(term %in% c("best_pit_sec", "grid")) %>%
-  select(term, estimate, conf.low, conf.high, p.value)
+  select(term, estimate, conf.low, conf.high, p.value) %>%
+  kable(
+    caption = "Regression coefficients for pit time and grid position (base model)",
+    col.names = c("Variable","Estimate","Lower 95%","Upper 95%","p-value"),
+    digits = 5,
+    align = c("c","c","c","c","c")
+  ) %>%
+  kable_styling(
+    bootstrap_options = c("condensed","striped"),
+    full_width = FALSE,
+    position = "center",
+    font_size = 14
+  ) %>%
+  row_spec(0, bold = TRUE, color = "white", background = "#4F6D7A")
+
 ```
 
 ```{r, regression_plot, echo=FALSE, warning=FALSE}
@@ -219,7 +219,7 @@ By comparison, grid position has a far stronger effect. Starting one place furth
 
 ## Bootstrapping to verify the trend
 
-```{r bootstrap, results='hide'}
+```{r bootstrap, results='hide', echo=FALSE}
 n_boot <- 1000
 n <- nrow(driver_race_df)
 
@@ -240,7 +240,21 @@ boot_results %>%
     mean_est = mean(beta_pit, na.rm = TRUE),
     ci_low = quantile(beta_pit, 0.025, na.rm = TRUE),
     ci_high = quantile(beta_pit, 0.975, na.rm = TRUE)
-  )
+  ) %>%
+  kable(
+    caption = "Bootstrap estimate for pit time effect with 95 percent interval",
+    col.names = c("Mean Estimate","Lower 95%","Upper 95%"),
+    digits = 5,
+    align = c("c","c","c")
+  ) %>%
+  kable_styling(
+    bootstrap_options = c("condensed","striped"),
+    full_width = FALSE,
+    position = "center",
+    font_size = 14
+  ) %>%
+  row_spec(0, bold = TRUE, color = "white", background = "#4F6D7A")
+
 ```
 
 ```{r bootstrap_plot, echo=FALSE}
@@ -255,7 +269,6 @@ boot_results %>%
     y = "Frequency"
   ) +
   theme_minimal()
-
 ```
 
 Bootstrapping confirms that the effect is stable.
@@ -265,7 +278,7 @@ Slow pit stops consistently push drivers downward.
 
 ## Does the effect change over time?
 
-```{r season_models}
+```{r season_models, echo=FALSE}
 season_effects <- driver_race_df %>%
   group_by(year) %>%
   do({
@@ -275,7 +288,22 @@ season_effects <- driver_race_df %>%
       beta_grid = coef(m)["grid"])
   })
 
-season_effects
+season_effects %>%
+  kable(
+    caption = "Regression coefficients by season for pit stop time and grid position",
+    col.names = c("Season", "Pit Effect", "Grid Effect"),
+    digits = 5,
+    align = c("c","c","c")
+  ) %>%
+  kable_styling(
+    bootstrap_options = c("condensed", "striped"),
+    full_width = FALSE,
+    position = "center",
+    font_size = 14
+  ) %>%
+  row_spec(0, bold = TRUE, color = "white", background = "#4F6D7A")
+
+
 ```
 
 ```{r season_plot, echo=FALSE}
@@ -307,7 +335,7 @@ One second used to break a race. Today it dents it. In a tight field, even dents
 
 ## Which teams suffer most?
 
-```{r}
+```{r, echo=FALSE}
 team_sensitivity <- driver_race_df %>%
   group_by(team) %>%
   summarise(
@@ -341,6 +369,24 @@ Midfield and backmarker teams such as Haas, Force India and Manor or Marussia te
 Top teams like Red Bull, Ferrari and Mercedes are more resilient. A slow stop hurts, but strong race pace lets them fight back. A delay becomes a setback, not a death sentence.
 
 Slow stops do not destroy the fast. They destroy the fragile.
+
+::: {.callout-note collapse="true"}
+### Reproducibility and code access
+
+This analysis is fully reproducible.  
+All scripts for data loading, cleaning, joining, modelling and visualisation are available here:
+
+**GitHub repository:** <https://github.com/jyovika/jyovika-analytics-portfolio>
+
+Contents include:\
+• Data preparation code  
+• Regression and bootstrap models  
+• Seasonal and constructor analysis  
+• All plots and report scripts  
+• Outputs and figures  
+
+You are welcome to explore, fork or extend the analysis.
+:::
 
 ##  Conclusion
 Pit stops matter, but not always in the dramatic way commentary suggests. One second typically costs less than a tenth of a finishing place but the impact becomes powerful when repeated across races, seasons or drivers.

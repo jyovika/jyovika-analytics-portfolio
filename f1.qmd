@@ -8,13 +8,34 @@ format: html
 editor: visual
 ---
 
-## libraries
+On lap 37 of the Italian Grand Prix, everything was perfect - clean air, fresh tyres, P1.
+
+Then came the pit stop.
+Three seconds too slow.
+He rejoined in third.
+He never recovered.
+
+In a sport where races last 90 minutes, can three seconds in a pit lane really decide everything?
+
+I used real Formula 1 data to find out — not just with charts, but with statistical modelling, bootstrapping and predictive analysis.
+
+This blog is the investigation.
+
+We’re answering one question:
+
+**Does pit stop speed translate into better race results in a measurable way.**
+
+
+
+## Libraries
 ```{r, libraries, message=FALSE}
 library(tidyverse)
+library(broom)     
+library(rsample)   
 ```
 
 
-## load data
+## Load data
 ```{r, message=FALSE}
 
 pitstops_df <- read.csv(here::here("data/pit_stops.csv"))
@@ -31,7 +52,7 @@ status_df <- read.csv(here::here("data/status.csv"))
 ```
 
 
-## process data
+## Process data
 ```{r}
 drivers_lookup <- driver_df %>%
       mutate(driver_full = paste(forename, surname)) %>%
@@ -82,6 +103,40 @@ combined_2024 <- combined_df %>%
 
 ```
 
+## Exploratory analysis
 ```{r}
-
+driver_race_df <- combined_df %>%
+  mutate(
+    stop_sec = suppressWarnings(as.numeric(duration))) %>%
+  drop_na(stop_sec) %>%      
+  
+  group_by(year, race, driver, constructor, grid, positionOrder) %>%
+  summarise(
+    best_pit_sec = min(stop_sec, na.rm = TRUE),
+    avg_pit_sec  = mean(stop_sec, na.rm = TRUE),
+    n_stops      = n(),
+    .groups = "drop") %>%
+  
+  filter(best_pit_sec > 15, best_pit_sec < 60)
 ```
+
+### Overall distribution (best pit per driver per race, all years):
+```{r}
+driver_race_df %>%
+  ggplot(aes(best_pit_sec)) +
+  geom_density(fill = "steelblue", alpha = 0.45) +
+  labs(
+    title = "Complete pit lane time distribution",
+    subtitle = "Most pit cycles fall between 18 and 30 seconds",
+    x = "Total pit lane time (seconds)",
+    y = "Density"
+  ) +
+  theme_minimal()
+```
+
+
+
+
+
+
+

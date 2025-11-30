@@ -1,0 +1,79 @@
+[
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "Jyovika Aswale",
+    "section": "",
+    "text": "I am currently completing a Master of Business Analytics at Monash University, building on my undergraduate studies in Economics.\nMy academic journey has strengthened my skills in data analysis, interpretation, and communication, and I am particularly interested in how analytical tools can inform evidence-based decisions in health, policy, and business.\nI am developing proficiency in R, Python, Quarto, and GitHub, with a focus on reproducible workflows and clear data communication. Through projects and coursework, I have enjoyed working on tasks that involve cleaning and transforming complex datasets, creating effective visualisations, and presenting insights in a way that is accessible to different audiences.\nOutside of university, I prioritise health and balance- I train regularly and keep learning about nutrition. I also enjoy hands-on creative work, like building LEGO or cooking, and I unwind by rewatching a few of my favourite series."
+  },
+  {
+    "objectID": "about.html#about-me",
+    "href": "about.html#about-me",
+    "title": "Jyovika Aswale",
+    "section": "",
+    "text": "I am currently completing a Master of Business Analytics at Monash University, building on my undergraduate studies in Economics.\nMy academic journey has strengthened my skills in data analysis, interpretation, and communication, and I am particularly interested in how analytical tools can inform evidence-based decisions in health, policy, and business.\nI am developing proficiency in R, Python, Quarto, and GitHub, with a focus on reproducible workflows and clear data communication. Through projects and coursework, I have enjoyed working on tasks that involve cleaning and transforming complex datasets, creating effective visualisations, and presenting insights in a way that is accessible to different audiences.\nOutside of university, I prioritise health and balance- I train regularly and keep learning about nutrition. I also enjoy hands-on creative work, like building LEGO or cooking, and I unwind by rewatching a few of my favourite series."
+  },
+  {
+    "objectID": "posts/f1/f1.html",
+    "href": "posts/f1/f1.html",
+    "title": "Do Fast Pit Stops Win F1 Races - or Is It Just Hype?",
+    "section": "",
+    "text": "In Formula One, every tenth of a second is sacred. Commentators often claim that pit stops decide races, but how much does a second actually matter? Does an extra moment in the pit lane truly push a driver down the finishing order, or is the fear larger than the effect?\nI analysed pit-stop timing and race results across four seasons. My goal was simple. I wanted to measure the cost of one lost second.\nThe results were not what I expected.\nFull code and reproducible scripts are available on GitHub\n&gt; Link: https://github.com/jyovika/jyovika-analytics-portfolio\n\n\n\n\n\n\nData Source\n\n\n\nErgast Formula One Archive, 2011 to 2024\nCSV data retrieved from the public developer database\nhttp://ergast.com/mrd/db/\nTools: R, tidyverse, ggplot2, broom, boot\nLicence: Free for educational and non commercial projects\nMore info: http://ergast.com/mrd/terms/"
+  },
+  {
+    "objectID": "posts/f1/f1.html#introduction",
+    "href": "posts/f1/f1.html#introduction",
+    "title": "Do Fast Pit Stops Win F1 Races - or Is It Just Hype?",
+    "section": "",
+    "text": "In Formula One, every tenth of a second is sacred. Commentators often claim that pit stops decide races, but how much does a second actually matter? Does an extra moment in the pit lane truly push a driver down the finishing order, or is the fear larger than the effect?\nI analysed pit-stop timing and race results across four seasons. My goal was simple. I wanted to measure the cost of one lost second.\nThe results were not what I expected.\nFull code and reproducible scripts are available on GitHub\n&gt; Link: https://github.com/jyovika/jyovika-analytics-portfolio\n\n\n\n\n\n\nData Source\n\n\n\nErgast Formula One Archive, 2011 to 2024\nCSV data retrieved from the public developer database\nhttp://ergast.com/mrd/db/\nTools: R, tidyverse, ggplot2, broom, boot\nLicence: Free for educational and non commercial projects\nMore info: http://ergast.com/mrd/terms/"
+  },
+  {
+    "objectID": "posts/f1/f1.html#exploratory-analysis",
+    "href": "posts/f1/f1.html#exploratory-analysis",
+    "title": "Do Fast Pit Stops Win F1 Races - or Is It Just Hype?",
+    "section": "Exploratory analysis",
+    "text": "Exploratory analysis\n\n\n\n\n\n\n\n\n\nMost full pit cycles range from 18 to 30 seconds. Anything above 35 seconds usually signals damage, a hold at the release, a penalty or time lost behind cars entering or leaving the pits."
+  },
+  {
+    "objectID": "posts/f1/f1.html#regression-how-much-does-a-second-cost",
+    "href": "posts/f1/f1.html#regression-how-much-does-a-second-cost",
+    "title": "Do Fast Pit Stops Win F1 Races - or Is It Just Hype?",
+    "section": "Regression: How much does a second cost?",
+    "text": "Regression: How much does a second cost?\n\n\n\nRegression coefficients for pit time and grid position (base model)\n\n\nVariable\nEstimate\nLower 95%\nUpper 95%\np-value\n\n\n\n\nbest_pit_sec\n0.08403\n0.03022\n0.13785\n0.00223\n\n\ngrid\n0.40501\n0.35920\n0.45081\n0.00000\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nThe regression shows that each extra second in the pit lane worsens finishing position by about 0.08 places on average. Slow stops therefore matter, but not in an explosive way. A delay of two or three seconds rarely destroys a race, but the effect compounds across a season.\nSmall losses are harmless alone. Repeated losses change outcomes. A quarter of a place here and half a place there becomes the difference between a podium and fourth, or between finishing in the points and missing out.\nBy comparison, grid position has a far stronger effect. Starting one place further back costs nearly half a finishing position. Pit time matters, but track position matters more."
+  },
+  {
+    "objectID": "posts/f1/f1.html#bootstrapping-to-verify-the-trend",
+    "href": "posts/f1/f1.html#bootstrapping-to-verify-the-trend",
+    "title": "Do Fast Pit Stops Win F1 Races - or Is It Just Hype?",
+    "section": "Bootstrapping to verify the trend",
+    "text": "Bootstrapping to verify the trend\n\n\n\nBootstrap estimate for pit time effect with 95 percent interval\n\n\nMean Estimate\nLower 95%\nUpper 95%\n\n\n\n\n0.08323\n0.0261\n0.14157\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nBootstrapping confirms that the effect is stable. The average value is around 0.08, with a confidence range near 0.05 to 0.11. Nearly every resampled model returned a positive relationship. Slow pit stops consistently push drivers downward."
+  },
+  {
+    "objectID": "posts/f1/f1.html#does-the-effect-change-over-time",
+    "href": "posts/f1/f1.html#does-the-effect-change-over-time",
+    "title": "Do Fast Pit Stops Win F1 Races - or Is It Just Hype?",
+    "section": "Does the effect change over time?",
+    "text": "Does the effect change over time?\n\n\n\nRegression coefficients by season for pit stop time and grid position\n\n\nSeason\nPit Effect\nGrid Effect\n\n\n\n\n2011\n0.23597\n0.65066\n\n\n2015\n0.03788\n0.61571\n\n\n2019\n0.11588\n0.58210\n\n\n2024\n0.10105\n0.63977\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nIn 2011, a single second was costly and often race damaging. By 2015, the effect had softened, which reflects increased operational consistency and a wider field spread. From 2019 onward, the influence sits around 0.10 to 0.15, small on paper but significant when margins are measured in tenths. One second used to break a race. Today it dents it. In a tight field, even dents matter."
+  },
+  {
+    "objectID": "posts/f1/f1.html#which-teams-suffer-most",
+    "href": "posts/f1/f1.html#which-teams-suffer-most",
+    "title": "Do Fast Pit Stops Win F1 Races - or Is It Just Hype?",
+    "section": "Which teams suffer most?",
+    "text": "Which teams suffer most?\n\n\n\n\nCorrelation between pit stop time and finishing position by team\n\n\nTeam\nCorrelation\n\n\n\n\nHaas\n0.27367\n\n\nMcLaren\n0.19495\n\n\nRed Bull\n0.15712\n\n\nSauber/Alfa Romeo\n0.13420\n\n\nRacing Point/Aston Martin\n0.12759\n\n\nLotus/Renault/Alpine\n0.07779\n\n\nFerrari\n0.06111\n\n\nAlphaTauri/Toro Rosso/RB\n0.01950\n\n\nWilliams\n0.01311\n\n\nMercedes\n-0.02602\n\n\nVirgin\n-0.10628\n\n\nForce India\n-0.19159\n\n\nManor/Marussia\n-0.44892\n\n\nHRT\n-0.46338\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nNot every team pays the same price for a slow stop.\nMidfield and backmarker teams such as Haas, Force India and Manor or Marussia tend to lose the most. When they fall behind, they often lack the pace to recover.\nTop teams like Red Bull, Ferrari and Mercedes are more resilient. A slow stop hurts, but strong race pace lets them fight back. A delay becomes a setback, not a death sentence.\nSlow stops do not destroy the fast. They destroy the fragile.\n\n\n\n\n\n\nReproducibility and code access\n\n\n\n\n\nThis analysis is fully reproducible.\nAll scripts for data loading, cleaning, joining, modelling and visualisation are available here:\nGitHub repository: https://github.com/jyovika/jyovika-analytics-portfolio\nContents include:\n• Data preparation code\n• Regression and bootstrap models\n• Seasonal and constructor analysis\n• All plots and report scripts\n• Outputs and figures\nYou are welcome to explore, fork or extend the analysis."
+  },
+  {
+    "objectID": "posts/f1/f1.html#conclusion",
+    "href": "posts/f1/f1.html#conclusion",
+    "title": "Do Fast Pit Stops Win F1 Races - or Is It Just Hype?",
+    "section": "Conclusion",
+    "text": "Conclusion\nPit stops matter, but not always in the dramatic way commentary suggests. One second typically costs less than a tenth of a finishing place but the impact becomes powerful when repeated across races, seasons or drivers.\nGrid position remains the strongest determinant of outcome and race pace is the engine of everything. Pit crews are not out to perform miracles, they are fighting to avoid thousands of small cuts.\nIn Formula One, fractions are currency, and pit time is one of them."
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Blogs",
+    "section": "",
+    "text": "Do Fast Pit Stops Win F1 Races - or Is It Just Hype?\n\n\n\nR\n\nData Analysis\n\nVisualisation\n\nFormula1\n\n\n\nAn R-powered exploration of Formula 1 performance, lap times, and insights.\n\n\n\n\n\nNov 30, 2025\n\n\n\n\n\nNo matching items"
+  }
+]

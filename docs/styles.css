@@ -1,0 +1,107 @@
+/* ================================
+   Global Page Styling
+===================================*/
+body {
+  background-color: #f8fafc;
+  color: #222;
+  font-family: "Inter", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  line-height: 1.6;
+}
+
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Poppins", "Inter", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  color: #5E7452;               /* soft sage */
+  letter-spacing: 0.2px;
+  font-weight: 600;
+}
+
+/* ================================
+   Navbar
+===================================*/
+.navbar {
+  background-color: #555D50;   
+}
+.navbar a {
+  color: #ffffff !important;
+}
+.navbar a:hover {
+  color: #DCE9CF !important;
+}
+
+/* ================================
+   Banner (keeps your IMAGE)
+   DO NOT use background: ... here,
+   only background-color, or it will
+   override the image.
+===================================*/
+.quarto-title-block .quarto-title-banner,
+.quarto-title-banner {
+  background-color: #006466;                      /* sage fallback tone */
+  background-size: cover !important;
+  background-position: bottom center !important;
+  padding-top: 3.5rem !important;
+  padding-bottom: 3.5rem !important;
+}
+
+/* Banner Title */
+.quarto-title-banner .title {
+  color: #ffffff !important;
+  font-weight: 700;
+  text-shadow: 0 3px 8px rgba(0,0,0,0.65);  /* readable on image */
+}
+
+/* Banner Subtitle */
+.quarto-title-banner .subtitle {
+  color: #F5F8F2 !important;
+  font-weight: 500;
+  opacity: 0.95;
+  text-shadow: 0 2px 6px rgba(0,0,0,0.75);
+}
+
+/* Tag badges under title */
+.quarto-title-banner .quarto-categories .category {
+  background: rgba(255,255,255,0.22);
+  border: none;
+  color: #ffffff;
+  font-weight: 500;
+}
+
+/* ================================
+   Links — plot-green highlight
+===================================*/
+a { 
+  color: #91B47C;
+  font-weight: 500;
+}
+a:hover,
+a:focus { 
+  color: #B9D9A8;
+  text-decoration: underline;
+}
+
+/* ================================
+   Tables & Rules — softer, cohesive
+===================================*/
+table,
+hr {
+  border-color: #90AE78;
+}
+thead {
+  background-color: #E5F0E0;
+}
+thead th {
+  color: #4F6340;
+  font-weight: 600;
+}
+
+/* ================================
+   Code (inline + blocks)
+===================================*/
+code {
+  background:#eef6eb;
+  color:#324a2e;
+  padding:3px 5px;
+  border-radius:4px;
+  font-size: 0.92em;
+}

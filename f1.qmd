@@ -349,4 +349,11 @@ team_sensitivity %>%
     axis.title.y = element_text(face = "bold"),
     panel.grid.minor = element_blank())
 ```
+Not every team pays the same price for a slow pit stop.
 
+Teams like Haas, Force India and HRT show a strong positive relationship between pit time and finishing position.
+
+A slow stop usually sends them backwards because they do not have the race pace to erase the lost time. Midfield groups like Lotus/Renault/Alpine and Manor/Marussia show similar sensitivity. Their margin for error is small, so time wasted in the pit lane becomes time they never get back.
+
+At the top end of the grid, Red Bull, Mercedes and Ferrari barely move with pit duration.
+A slow stop still hurts, but their underlying pace allows them to recover. A mistake is a setback, not a race-ending blow.

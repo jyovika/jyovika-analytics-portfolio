@@ -30,4 +30,5 @@ format:
     sitemap: true        
     rss: true          
     open-graph: true    
-    twitter-card: true   
+    twitter-card: true 
+    include-in-header: "_meta.html"

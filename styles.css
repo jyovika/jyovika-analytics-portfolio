@@ -8,45 +8,47 @@ body {
   line-height: 1.6;
 }
 
-/* Typography */
+/* Headings */
 h1, h2, h3, h4, h5, h6 {
   font-family: "Poppins", "Inter", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-  color: #6F865C;               /* new theme heading colour */
+  color: #5E7452;               /* soft sage */
   letter-spacing: 0.2px;
   font-weight: 600;
 }
 
 /* ================================
-   Navbar — Olive Green
+   Navbar
 ===================================*/
 .navbar {
-  background-color: #4A5F43;    /* deep olive */
+  background-color: #555D50;   
 }
 .navbar a {
   color: #ffffff !important;
 }
-.navbar a:hover { 
+.navbar a:hover {
   color: #DCE9CF !important;
 }
 
 /* ================================
-   Title Banner — supports images
+   Banner (keeps your IMAGE)
+   DO NOT use background: ... here,
+   only background-color, or it will
+   override the image.
 ===================================*/
 .quarto-title-block .quarto-title-banner,
 .quarto-title-banner {
-  background-color: #6C8A5A;                      /* sage fallback tone */
+  background-color: #006466;                      /* sage fallback tone */
   background-size: cover !important;
   background-position: bottom center !important;
   padding-top: 3.5rem !important;
   padding-bottom: 3.5rem !important;
-  border-bottom: 4px solid rgba(255,255,255,0.15); /* subtle finish */
 }
 
 /* Banner Title */
 .quarto-title-banner .title {
   color: #ffffff !important;
   font-weight: 700;
-  text-shadow: 0 3px 8px rgba(0,0,0,0.65);  /* makes title readable on any banner */
+  text-shadow: 0 3px 8px rgba(0,0,0,0.65);  /* readable on image */
 }
 
 /* Banner Subtitle */
@@ -72,7 +74,8 @@ a {
   color: #91B47C;
   font-weight: 500;
 }
-a:hover, a:focus { 
+a:hover,
+a:focus { 
   color: #B9D9A8;
   text-decoration: underline;
 }
@@ -80,7 +83,8 @@ a:hover, a:focus {
 /* ================================
    Tables & Rules — softer, cohesive
 ===================================*/
-table, hr {
+table,
+hr {
   border-color: #90AE78;
 }
 thead {

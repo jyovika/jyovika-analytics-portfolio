@@ -145,6 +145,35 @@ summary(model_f1)
 
 ```
 
+```{r, regression_table}
+
+tidy(model_f1, conf.int = TRUE) %>%
+  filter(term %in% c("best_pit_sec", "grid")) %>%
+  select(term, estimate, conf.low, conf.high, p.value)
+
+```
+
+```{r, regression_plot}
+driver_race_df %>%
+  ggplot(aes(best_pit_sec, positionOrder)) +
+  geom_point(alpha = 0.35, size = 1.4) +
+  geom_smooth(method = "lm", se = TRUE, color = "#d62728", size = 1) +
+  scale_y_reverse(expand = expansion(mult = c(0.02, 0.05))) +
+  
+  labs(
+    title = "Slower pit stops drag drivers backwards",
+    subtitle = "Relationship between total pit time and finishing position",
+    x = "Total pit time (seconds)",
+    y = "Finishing position (P1 at top)") +
+  
+  theme_minimal(base_size = 13) +
+  theme(
+    plot.title = element_text(face = "plain"),
+    panel.grid.minor = element_blank())
+
+
+```
+
 
 
 

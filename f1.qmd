@@ -234,7 +234,7 @@ tidy(model_f1, conf.int = TRUE) %>%
 
 ```
 
-```{r, regression_plot, echo=FALSE, warning=FALSE}
+```{r, regression_plot, echo=FALSE, warning=FALSE, message=FALSE}
 driver_race_df %>%
   ggplot(aes(best_pit_sec, positionOrder)) +
   
@@ -246,17 +246,17 @@ driver_race_df %>%
     color = "#2E7C73",          
     fill  = "#A3CEC8",           
     linewidth = 1.35
-  ) +
+    ) +
   
   scale_x_continuous(
     breaks = seq(20, 60, by = 5),
     limits = c(18, 62),
     expand = expansion(mult = c(0.01, 0.03))
-  ) +
+    ) +
   scale_y_reverse(
     breaks = seq(0, 20, by = 2),
     expand = expansion(mult = c(0.02, 0.05))
-  ) +
+    ) +
   
   labs(
     title = "Slower pit stops drag drivers backwards",
@@ -264,7 +264,7 @@ driver_race_df %>%
     x = "Total pit time (seconds)",
     y = "Finishing position (P1 at top)",
     caption = "R² ~0.52 | fitted with finishing position ~ pit time + grid + constructor"
-  ) +
+    ) +
   
   theme_minimal(base_size = 13) +
   theme(
@@ -280,8 +280,7 @@ driver_race_df %>%
     axis.title.y = element_text(margin = margin(r = 8), color = "#35524A"),
     
     axis.text = element_text(color = "#4A675A"),
-    plot.margin = margin(10,10,10,10)
-  )
+    plot.margin = margin(10,10,10,10))
 
 
 ```
@@ -463,9 +462,12 @@ team_sensitivity %>%
     position = "center",
     font_size = 14
   ) %>%
-  row_spec(0, bold = TRUE, color = "white", background = "#4F6D7A")
+  row_spec(0, bold = TRUE, color = "white", background = "#4F6D7A")%>% 
+  scroll_box(height = "300px") 
 
 ```
+
+<br>
 
 ```{r, echo=FALSE}
 team_sensitivity %>%
@@ -473,7 +475,7 @@ team_sensitivity %>%
   ggplot(aes(x = team, y = correlation, fill = team)) +
   geom_col() +
   scale_fill_manual(values = team_palette) +
-  coord_flip() +
+  coord_flip(clip = "off") +
   labs(
     title = "Which teams suffer most from slow pit stops?",
     subtitle = "Correlation between pit time and finishing position",
@@ -481,12 +483,14 @@ team_sensitivity %>%
     y = "Sensitivity to pit stop time") +
   theme_minimal(base_size = 13) +
   theme(
+    axis.text.y = element_text(size = 11, face="bold", colour="#35524A"),
     plot.title   = element_text(face = "bold"),
     axis.title.y = element_text(face = "bold"),
     panel.grid.minor = element_blank(),
     legend.position  = "none")
 
 ```
+
 Not every team pays the same price for a slow stop.
 
 Midfield and backmarker teams such as Haas, Force India and Manor or Marussia tend to lose the most. When they fall behind, they often lack the pace to recover.

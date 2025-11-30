@@ -227,3 +227,18 @@ boot_results %>%
   theme_minimal()
 
 ```
+
+
+I bootstrapped the pit stop coefficient 1,000 times in order to check whether the trend was just sample noise or something that holds up under resampling.
+
+The results are very consistent:
+• The average effect is roughly 0.083 finishing places lost per extra second in pit lane
+• The 95 percent confidence range runs from about 0.03 to 0.14
+• Almost every resampled model returned a positive effect size
+
+This confirms that the relationship is stable rather than random.
+
+Slower pit stops are reliably associated with worse finishing positions even after accounting for grid position and constructor.
+
+The effect per second is not massive, but it becomes important in aggregate.
+A ten second longer stop is typically worth about 0.8 places, which can be the difference between points and no points at all.

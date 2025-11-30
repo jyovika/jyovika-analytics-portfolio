@@ -28,7 +28,7 @@ CSV data retrieved from the public developer database
 More info: <http://ergast.com/mrd/terms/>
 :::
 
-```{r, libraries, message=FALSE, echo=FALSE}
+```{r, setup, message=FALSE, echo=FALSE}
 ## Libraries
 set.seed(44)
 library(tidyverse)
@@ -36,6 +36,25 @@ library(broom)
 library(rsample) 
 library(kableExtra)
 library(knitr)
+
+team_palette <- c(
+  "Red Bull"              = "#F94144",
+  "Ferrari"               = "#F3722C",
+  "Mercedes"              = "#F8961E",
+  "McLaren"               = "#F9844A",
+  "Racing Point/Aston Martin" = "#F9C74F",
+  "Williams"              = "#90BE6D",
+  "Lotus/Renault/Alpine"  = "#43AA8B",
+  "AlphaTauri/Toro Rosso/RB" = "#4D908E",
+  "Haas F1 Team"          = "#577590",
+  "Sauber/Alfa Romeo"     = "#277DA1",
+  "Force India"           = "#22577A",
+  "Manor/Marussia"        = "#9C89B8",
+  "HRT"                   = "#7E6B8F",
+  "Virgin"                = "#5A4D7C")
+
+
+
 ```
 
 ```{r, load_data, message=FALSE, echo=FALSE}
@@ -156,14 +175,34 @@ driver_race_df <- combined_df %>%
 ```{r, echo=FALSE}
 driver_race_df %>%
   ggplot(aes(best_pit_sec)) +
-  geom_density(fill = "steelblue", alpha = 0.45) +
+  
+  geom_density(
+    fill = "#A3CEC8",       
+    color = "#2E7C73",     
+    linewidth = 1.2,
+    alpha = 0.6
+    ) +
+  
   labs(
     title = "Complete pit lane time distribution",
     subtitle = "Most pit cycles fall between 18 and 30 seconds",
     x = "Total pit lane time (seconds)",
     y = "Density"
-  ) +
-  theme_minimal()
+    ) +
+  
+  theme_minimal(base_size = 13) +
+  theme(
+    plot.title = element_text(face = "bold", size = 15, color = "#2E7C73"),
+    plot.subtitle = element_text(size = 11, margin = margin(b = 6), color = "#35524A"),
+    
+    axis.title.x = element_text(margin = margin(t = 8), color = "#35524A"),
+    axis.title.y = element_text(margin = margin(r = 8), color = "#35524A"),
+    axis.text   = element_text(color = "#4A675A"),
+    
+    panel.grid.major.y = element_line(color = "#DDE7E4", linewidth = 0.3),
+    
+    plot.margin = margin(10,10,10,10))
+
 ```
 
 Most full pit cycles range from 18 to 30 seconds. Anything above 35 seconds usually signals
@@ -198,20 +237,52 @@ tidy(model_f1, conf.int = TRUE) %>%
 ```{r, regression_plot, echo=FALSE, warning=FALSE}
 driver_race_df %>%
   ggplot(aes(best_pit_sec, positionOrder)) +
-  geom_point(alpha = 0.35, size = 1.4) +
-  geom_smooth(method = "lm", se = TRUE, color = "#d62728", size = 1) +
-  scale_y_reverse(expand = expansion(mult = c(0.02, 0.05))) +
+  
+  geom_point(alpha = 0.28, size = 1.3) +
+  
+  geom_smooth(
+    method = "lm",
+    se = TRUE,
+    color = "#2E7C73",          
+    fill  = "#A3CEC8",           
+    linewidth = 1.35
+  ) +
+  
+  scale_x_continuous(
+    breaks = seq(20, 60, by = 5),
+    limits = c(18, 62),
+    expand = expansion(mult = c(0.01, 0.03))
+  ) +
+  scale_y_reverse(
+    breaks = seq(0, 20, by = 2),
+    expand = expansion(mult = c(0.02, 0.05))
+  ) +
   
   labs(
     title = "Slower pit stops drag drivers backwards",
     subtitle = "Relationship between total pit time and finishing position",
     x = "Total pit time (seconds)",
-    y = "Finishing position (P1 at top)") +
+    y = "Finishing position (P1 at top)",
+    caption = "R² ~0.52 | fitted with finishing position ~ pit time + grid + constructor"
+  ) +
   
   theme_minimal(base_size = 13) +
   theme(
-    plot.title = element_text(face = "plain"),
-    panel.grid.minor = element_blank())
+    plot.title = element_text(face = "bold", size = 15, color = "#2E7C73"),
+    plot.subtitle = element_text(size = 11, margin = margin(b = 6), color = "#35524A"),
+    plot.caption = element_text(hjust = 0, size = 9, colour = "#557A73"),
+    
+    panel.grid.minor = element_blank(),
+    panel.grid.major.x = element_blank(),
+    panel.grid.major.y = element_line(color = "#DDE7E4", linewidth = 0.3),
+    
+    axis.title.x = element_text(margin = margin(t = 8), color = "#35524A"),
+    axis.title.y = element_text(margin = margin(r = 8), color = "#35524A"),
+    
+    axis.text = element_text(color = "#4A675A"),
+    plot.margin = margin(10,10,10,10)
+  )
+
 
 ```
 
@@ -264,15 +335,38 @@ boot_results %>%
 ```{r bootstrap_plot, echo=FALSE}
 boot_results %>%
   ggplot(aes(beta_pit)) +
-  geom_histogram(bins = 40, fill = "dodgerblue2", alpha = 0.6, color = "white") +
-  geom_vline(aes(xintercept = mean(beta_pit)), color = "red", linewidth = 1.2) +
-  labs(
-    title = "Bootstrap distribution of the pit-time effect",
-    subtitle = "Estimated change in finishing position per additional second spent in the pit lane",
-    x = "Coefficient for pit time (positions per second)",
-    y = "Frequency"
+  
+  geom_histogram(
+  bins = 40,
+  fill = "#A3CEC8",
+  color = "#35524A",
+  alpha = 0.73
   ) +
-  theme_minimal()
+  geom_vline(
+  aes(xintercept = mean(beta_pit)),
+  color = "#E57F84",    
+  linewidth = 1.4
+  ) +
+  labs(
+    title = "Bootstrap distribution of pit stop impact",
+    subtitle = "Coefficient estimates for pit time from 1000 resamples",
+    x = "Coefficient for pit time (positions lost per second)",
+    y = "Frequency"
+    ) +
+  theme_minimal(base_size = 13) +
+  theme(
+    plot.title = element_text(face = "bold", size = 15, color = "#2E7C73"),
+    plot.subtitle = element_text(size = 11, margin = margin(b = 6), color = "#35524A"),
+    plot.caption = element_text(hjust = 0, size = 9),
+    
+    axis.title.x = element_text(margin = margin(t = 8), color = "#35524A"),
+    axis.title.y = element_text(margin = margin(r = 8), color = "#35524A"),
+    axis.text   = element_text(color = "#4A675A"),
+    
+    panel.grid.minor = element_blank(),
+    panel.grid.major.y = element_line(color = "#DDE7E4", linewidth = 0.3),
+    panel.grid.major.x = element_blank())
+
 ```
 
 Bootstrapping confirms that the effect is stable.
@@ -298,38 +392,47 @@ season_effects %>%
     col.names = c("Season", "Pit Effect", "Grid Effect"),
     digits = 5,
     align = c("c","c","c")
-  ) %>%
+    ) %>%
   kable_styling(
     bootstrap_options = c("condensed", "striped"),
     full_width = FALSE,
     position = "center",
     font_size = 14
-  ) %>%
+    ) %>%
   row_spec(0, bold = TRUE, color = "white", background = "#4F6D7A")
 
 
 ```
 
 ```{r season_plot, echo=FALSE}
+
 season_effects %>%
   ggplot(aes(x = factor(year), y = beta_pit, group = 1)) +
-  geom_area(fill = "#74add1", alpha = 0.3) +
-  geom_line(color = "#1b6ca8", linewidth = 1.5) +
-  geom_point(size = 4, color = "#1b6ca8", fill = "white",
+
+  geom_area(fill = "#A3CEC8", alpha = 0.35) +
+
+  geom_line(color = "#2E7C73", linewidth = 1.6) +
+
+  geom_point(size = 4,
+             color = "#2E7C73", fill = "white",
              shape = 21, stroke = 1.2) +
   labs(
     title = "How costly is pit-lane time across seasons?",
     subtitle = "Coefficient = finishing positions lost per extra second in the lane",
     x = "Season",
-    y = "Positions lost per second") +
-  
+    y = "Positions lost per second"
+  ) +
   theme_minimal(base_size = 13) +
   theme(
-    plot.title = element_text(face = "bold", size = 16),
+    plot.title = element_text(face = "bold", size = 16, color = "#2E7C73"),
+    plot.subtitle = element_text(margin = margin(b = 10), color = "#35524A"),
+    axis.title.x = element_text(margin = margin(t = 6), color = "#35524A"),
+    axis.title.y = element_text(margin = margin(r = 6), color = "#35524A"),
+    axis.text = element_text(color = "#4A675A"),
     panel.grid.minor = element_blank(),
-    axis.title = element_text(face = "bold"),
-    plot.subtitle = element_text(margin = margin(b = 10)))
-  
+    panel.grid.major.x = element_blank(),
+    panel.grid.major.y = element_line(color = "#DDE7E4", linewidth = 0.3),
+    plot.margin = margin(10,10,10,10))
 ```
 
 In 2011, a single second was costly and often race damaging.
@@ -366,21 +469,23 @@ team_sensitivity %>%
 
 ```{r, echo=FALSE}
 team_sensitivity %>%
-  mutate(constructor = fct_reorder(team, correlation)) %>%
-  ggplot(aes(team, correlation)) +
-  geom_col(fill = "#ff695e", alpha = 0.8) +
+  mutate(team = fct_reorder(team, correlation)) %>%
+  ggplot(aes(x = team, y = correlation, fill = team)) +
+  geom_col() +
+  scale_fill_manual(values = team_palette) +
   coord_flip() +
   labs(
     title = "Which teams suffer most from slow pit stops?",
     subtitle = "Correlation between pit time and finishing position",
     x = "Constructor",
-    y = "Sensitivity to pit-stop time") +
-  
+    y = "Sensitivity to pit stop time") +
   theme_minimal(base_size = 13) +
   theme(
-    plot.title = element_text(face = "bold"),
+    plot.title   = element_text(face = "bold"),
     axis.title.y = element_text(face = "bold"),
-    panel.grid.minor = element_blank())
+    panel.grid.minor = element_blank(),
+    legend.position  = "none")
+
 ```
 Not every team pays the same price for a slow stop.
 

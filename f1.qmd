@@ -242,3 +242,40 @@ Slower pit stops are reliably associated with worse finishing positions even aft
 
 The effect per second is not massive, but it becomes important in aggregate.
 A ten second longer stop is typically worth about 0.8 places, which can be the difference between points and no points at all.
+
+## Run per-season regression
+
+```{r season_models}
+season_effects <- driver_race_df %>%
+  group_by(year) %>%
+  do({
+    m <- lm(positionOrder ~ best_pit_sec + grid, data = .)
+    tibble(
+      beta_pit = coef(m)["best_pit_sec"],
+      beta_grid = coef(m)["grid"])
+  })
+
+season_effects
+```
+
+```{r season_plot}
+season_effects %>%
+  ggplot(aes(x = factor(year), y = beta_pit, group = 1)) +
+  geom_area(fill = "#74add1", alpha = 0.3) +
+  geom_line(color = "#1b6ca8", linewidth = 1.5) +
+  geom_point(size = 4, color = "#1b6ca8", fill = "white",
+             shape = 21, stroke = 1.2) +
+  labs(
+    title = "How costly is pit-lane time across seasons?",
+    subtitle = "Coefficient = finishing positions lost per extra second in the lane",
+    x = "Season",
+    y = "Positions lost per second") +
+  
+  theme_minimal(base_size = 13) +
+  theme(
+    plot.title = element_text(face = "bold", size = 16),
+    panel.grid.minor = element_blank(),
+    axis.title = element_text(face = "bold"),
+    plot.subtitle = element_text(margin = margin(b = 10)))
+  
+```

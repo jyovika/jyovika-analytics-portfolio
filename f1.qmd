@@ -134,7 +134,16 @@ driver_race_df %>%
   theme_minimal()
 ```
 
+## Regression model
 
+```{r}
+model_f1 <- lm(
+  positionOrder ~ best_pit_sec + grid + constructor,
+  data = driver_race_df)
+
+summary(model_f1)
+
+```
 
 
 

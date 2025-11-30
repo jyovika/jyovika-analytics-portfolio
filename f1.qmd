@@ -180,7 +180,7 @@ driver_race_df %>%
 Most full pit cycles range from 18 to 30 seconds. Anything above 35 seconds usually signals
 damage, a hold at the release, a penalty or time lost behind cars entering or leaving the pits.
 
-## Regression model
+## Regression: How much does a second cost?
 
 ```{r}
 model_f1 <- lm(
@@ -220,7 +220,7 @@ Small losses are harmless alone. Repeated losses change outcomes. A quarter of a
 
 By comparison, grid position has a far stronger effect. Starting one place further back costs nearly half a finishing position. Pit time matters, but track position matters more.
 
-## Bootstrapping to confirm results
+## Bootstrapping to verify the trend
 
 ```{r bootstrap}
 n_boot <- 1000
@@ -261,22 +261,12 @@ boot_results %>%
 
 ```
 
+Bootstrapping confirms that the effect is stable.
+The average value is around 0.08, with a confidence range near 0.05 to 0.11.
+Nearly every resampled model returned a positive relationship.
+Slow pit stops consistently push drivers downward.
 
-I bootstrapped the pit stop coefficient 1,000 times in order to check whether the trend was just sample noise or something that holds up under resampling.
-
-The results are very consistent:
-• The average effect is roughly 0.083 finishing places lost per extra second in pit lane
-• The 95 percent confidence range runs from about 0.03 to 0.14
-• Almost every resampled model returned a positive effect size
-
-This confirms that the relationship is stable rather than random.
-
-Slower pit stops are reliably associated with worse finishing positions even after accounting for grid position and constructor.
-
-The effect per second is not massive, but it becomes important in aggregate.
-A ten second longer stop is typically worth about 0.8 places, which can be the difference between points and no points at all.
-
-## Run per-season regression
+## Does the effect change over time?
 
 ```{r season_models}
 season_effects <- driver_race_df %>%
@@ -313,13 +303,10 @@ season_effects %>%
   
 ```
 
-Across the four seasons analysed (2011, 2015, 2019 and 2024), the cost of pit lane time is not constant and it changes with the era.
-
-In 2011, every additional second in the pit lane carried the highest penalty, with drivers losing more than 0.20 positions per second on average. Strategy errors were costly and overtaking was harder, so a slow stop could derail a race much more easily.
-
-By 2015, that penalty dropped sharply. Pit stop operations were more efficient and the field was more spread out, which meant drivers could absorb small mistakes better.
-
-From 2019 onward, the slope rises slightly then settles into a stable band. A slow stop still hurts, and the impact sits near 0.10 to 0.15 positions lost per second. This looks small on paper, but in a sport where gaps are measured in tenths, it remains a meaningful advantage for teams who can execute consistently fast stops.
+In 2011, a single second was costly and often race damaging.
+By 2015, the effect had softened, which reflects increased operational consistency and a wider field spread.
+From 2019 onward, the influence sits around 0.10 to 0.15, small on paper but significant when margins are measured in tenths.
+One second used to break a race. Today it dents it. In a tight field, even dents matter.
 
 ## Run per-constructor regression
 

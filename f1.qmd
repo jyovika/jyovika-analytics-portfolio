@@ -279,3 +279,11 @@ season_effects %>%
     plot.subtitle = element_text(margin = margin(b = 10)))
   
 ```
+
+Across the four seasons analysed (2011, 2015, 2019 and 2024), the cost of pit lane time is not constant and it changes with the era.
+
+In 2011, every additional second in the pit lane carried the highest penalty, with drivers losing more than 0.20 positions per second on average. Strategy errors were costly and overtaking was harder, so a slow stop could derail a race much more easily.
+
+By 2015, that penalty dropped sharply. Pit stop operations were more efficient and the field was more spread out, which meant drivers could absorb small mistakes better.
+
+From 2019 onward, the slope rises slightly then settles into a stable band. A slow stop still hurts, and the impact sits near 0.10 to 0.15 positions lost per second. This looks small on paper, but in a sport where gaps are measured in tenths, it remains a meaningful advantage for teams who can execute consistently fast stops.

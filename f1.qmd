@@ -1,44 +1,56 @@
 ---
 title: "Do Fast Pit Stops Win F1 Races - or Is It Just Hype?"
-editor: visual
----
----
-title: "blog"
 format: html
 editor: visual
 ---
+## Introduction
+In Formula One, every tenth of a second is sacred. Commentators often claim that pit stops
+decide races, but how much does a second actually matter? Does an extra moment in the pit
+lane truly push a driver down the finishing order, or is the fear larger than the effect?
 
-On lap 37 of the Italian Grand Prix, everything was perfect - clean air, fresh tyres, P1.
+I analysed pit-stop timing and race results across four seasons. My goal was simple.
+I wanted to measure the cost of one lost second.
 
-Then came the pit stop.
-Three seconds too slow.
-He rejoined in third.
-He never recovered.
+The results were not what I expected.
 
-In a sport where races last 90 minutes, can three seconds in a pit lane really decide everything?
+::: {.callout-note}
+### Data Source
+**Ergast Formula One Archive, 2011 to 2024**
 
-I used real Formula 1 data to find out — not just with charts, but with statistical modelling, bootstrapping and predictive analysis.
+CSV data retrieved from the public developer database  
+<http://ergast.com/mrd/db/>
 
-This blog is the investigation.
+**Tools:** R, tidyverse, ggplot2, broom, boot  
+**Licence:** Free for educational and non commercial projects  
+More info: <http://ergast.com/mrd/terms/>
+:::
 
-We’re answering one question:
+## Reproducibility
 
-**Does pit stop speed translate into better race results in a measurable way.**
+This analysis can be fully reproduced using the exact datasets, code and model pipeline.
+All scripts for data loading, cleaning, merging and statistical modelling are available at:
+
+**GitHub repository:** <https://github.com/jyovika/jyovika-analytics-portfolio>
+
+The repository contains:
+• raw and cleaned data  
+• code for joins and filtering  
+• regression and bootstrap scripts  
+• plot generation code  
+
+You are welcome to clone or fork the project and explore or extend it further.
 
 
-
+```{r, libraries, message=FALSE, echo=FALSE}
 ## Libraries
-```{r, libraries, message=FALSE}
 set.seed(44)
 library(tidyverse)
 library(broom)     
 library(rsample)   
 ```
 
-
+```{r, load_data, message=FALSE, echo=FALSE}
 ## Load data
-```{r, message=FALSE}
-
 pitstops_df <- read.csv(here::here("data/pit_stops.csv"))
 
 results_df <- read.csv(here::here("data/results.csv"))
@@ -53,8 +65,8 @@ status_df <- read.csv(here::here("data/status.csv"))
 ```
 
 
+```{r,data_processing, echo=FALSE}
 ## Process data
-```{r}
 drivers_lookup <- driver_df %>%
       mutate(driver_full = paste(forename, surname)) %>%
       select(driverId, driver_full)
@@ -105,7 +117,7 @@ combined_2024 <- combined_df %>%
 
 ### Team mapping 
 
-```{r}
+```{r, echo=FALSE}
 team_map <- tribble(
   ~name, ~team,
   "Ferrari",              "Ferrari",

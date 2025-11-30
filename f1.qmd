@@ -32,7 +32,7 @@ All scripts for data loading, cleaning, merging and statistical modelling are av
 
 **GitHub repository:** <https://github.com/jyovika/jyovika-analytics-portfolio>
 
-The repository contains:
+The repository contains: \
 • raw and cleaned data  
 • code for joins and filtering  
 • regression and bootstrap scripts  
@@ -140,14 +140,10 @@ team_map <- tribble(
   "Haas F1 Team",         "Haas",
   "Force India",          "Force India",
   "Virgin",               "Virgin")
-
-driver_race_df <- driver_race_df %>%
-  left_join(team_map, by = c("constructor" = "name"))  %>%
-  mutate(team = ifelse(is.na(team), constructor, team))
 ```
 
 ## Exploratory analysis
-```{r}
+```{r, echo=FALSE}
 driver_race_df <- combined_df %>%
   mutate(
     stop_sec = suppressWarnings(as.numeric(duration))) %>%
@@ -160,11 +156,14 @@ driver_race_df <- combined_df %>%
     n_stops      = n(),
     .groups = "drop") %>%
   
-  filter(best_pit_sec > 15, best_pit_sec < 60)
+  filter(best_pit_sec > 15, best_pit_sec < 60)%>%
+  
+  left_join(team_map, by = c("constructor" = "name"))  %>%
+  mutate(team = ifelse(is.na(team), constructor, team))
+
 ```
 
-### Overall distribution (best pit per driver per race, all years):
-```{r}
+```{r, echo=FALSE}
 driver_race_df %>%
   ggplot(aes(best_pit_sec)) +
   geom_density(fill = "steelblue", alpha = 0.45) +
@@ -182,19 +181,17 @@ damage, a hold at the release, a penalty or time lost behind cars entering or le
 
 ## Regression: How much does a second cost?
 
-```{r}
+```{r, regression_table, warning=FALSE}
 model_f1 <- lm(
   positionOrder ~ best_pit_sec + grid + constructor,
   data = driver_race_df)
-```
 
-```{r, regression_table}
 tidy(model_f1, conf.int = TRUE) %>%
   filter(term %in% c("best_pit_sec", "grid")) %>%
   select(term, estimate, conf.low, conf.high, p.value)
 ```
 
-```{r, regression_plot}
+```{r, regression_plot, echo=FALSE, warning=FALSE}
 driver_race_df %>%
   ggplot(aes(best_pit_sec, positionOrder)) +
   geom_point(alpha = 0.35, size = 1.4) +
@@ -222,7 +219,7 @@ By comparison, grid position has a far stronger effect. Starting one place furth
 
 ## Bootstrapping to verify the trend
 
-```{r bootstrap}
+```{r bootstrap, results='hide'}
 n_boot <- 1000
 n <- nrow(driver_race_df)
 
@@ -237,7 +234,7 @@ boot_results <- map_dfr(1:n_boot, function(i) {
 })
 ```
 
-```{r bootstrap_summary}
+```{r bootstrap_summary, echo=FALSE}
 boot_results %>%
   summarise(
     mean_est = mean(beta_pit, na.rm = TRUE),
@@ -246,7 +243,7 @@ boot_results %>%
   )
 ```
 
-```{r bootstrap_plot}
+```{r bootstrap_plot, echo=FALSE}
 boot_results %>%
   ggplot(aes(beta_pit)) +
   geom_histogram(bins = 40, fill = "dodgerblue2", alpha = 0.6, color = "white") +
@@ -281,7 +278,7 @@ season_effects <- driver_race_df %>%
 season_effects
 ```
 
-```{r season_plot}
+```{r season_plot, echo=FALSE}
 season_effects %>%
   ggplot(aes(x = factor(year), y = beta_pit, group = 1)) +
   geom_area(fill = "#74add1", alpha = 0.3) +
@@ -319,7 +316,7 @@ team_sensitivity <- driver_race_df %>%
   arrange(desc(correlation))
 ```
 
-```{r}
+```{r, echo=FALSE}
 team_sensitivity %>%
   mutate(constructor = fct_reorder(team, correlation)) %>%
   ggplot(aes(team, correlation)) +

@@ -185,9 +185,22 @@ Grid position, by comparison, is far more powerful.
 
 Starting one place further back equates to losing almost half a position at the finish — a much steeper penalty than pit time. This makes intuitive sense: a fast car starting deep in the pack has a lot more work to do, regardless of how fast the crew is.
 
+## Bootstrapping to confirm results
 
+```{r bootstrap}
+set.seed(44)
 
+n_boot <- 1000
+n <- nrow(driver_race_df)
 
-
-
+boot_results <- map_dfr(1:n_boot, function(i) {
+  sample_df <- driver_race_df %>% slice_sample(n = n, replace = TRUE)
+  
+  m <- lm(positionOrder ~ best_pit_sec + grid + constructor, data = sample_df)
+  
+  tibble(
+    id = i,
+    beta_pit = coef(m)["best_pit_sec"])
+})
+```
 

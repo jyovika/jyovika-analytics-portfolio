@@ -289,7 +289,108 @@ abline(0, 1, lty = 2)
 
 The results made sense intuitively. Southern Cross behaves in a more symmetric way so the Normal model works there. Flinders Street and QV Melbourne are right skewed so the Lognormal model captures their structure better. These choices become important later once we start estimating upper percentiles and running simulations.
 
+## Understanding the Busiest Days
+Planners often care about the 90th percentile flow. It is the level of traffic that only occurs on the busiest one out of ten days. If a crossing struggles at this level it gets congested.
 
+To estimate this level, I used both:
 
+- direct quantiles from the sample
+- bootstrap confidence intervals
+- model based percentile estimates
+
+The bootstrap method shows how the estimate varies if the data were resampled repeatedly.
+
+```{r, echo=FALSE}
+#| label: tbl-q90-sample
+
+pedestrian_long %>%
+  group_by(crossing) %>%
+  summarise(q90 = quantile(count, 0.9)) %>%
+  kable(caption = "Empirical 90th percentile estimates and 95% bootstrap confidence intervals for each crossing",
+        digits = 1, align = c("l","r")) %>%
+  kable_styling(
+    bootstrap_options = c("striped", "hover", "condensed", "responsive"),
+    full_width = FALSE) %>%
+  row_spec(0, bold = TRUE, color = "#FFFFFF", background = "#598392") %>%
+  column_spec(1, bold = TRUE, color = "#004D40")
+  
+q90_fn <- function(data, i) quantile(data[i], 0.9)
+
+# Flinders Street
+fl_boot <- boot(pedestrian_df$flinders_street, q90_fn, R = 1000)
+ci_fl <- boot.ci(fl_boot, type = "perc")
+
+# Southern Cross
+sc_boot <- boot(pedestrian_df$southern_cross, q90_fn, R = 1000)
+ci_sc <- boot.ci(sc_boot, type = "perc")
+
+# QV Melbourne
+qv_boot <- boot(pedestrian_df$qv_melbourne, q90_fn, R = 1000)
+ci_qv <- boot.ci(qv_boot, type = "perc")
+
+sample_tbl <- tibble(
+  crossing = c("Flinders Street","Southern Cross","QV Melbourne"),
+  q90_sample = round(c(
+    quantile(pedestrian_df$flinders_street, 0.9),
+    quantile(pedestrian_df$southern_cross, 0.9),
+    quantile(pedestrian_df$qv_melbourne, 0.9)), 
+    2),
+  q90_sample_low  = round(c(ci_fl$percent[4], ci_sc$percent[4], ci_qv$percent[4]), 2),
+  q90_sample_high = round(c(ci_fl$percent[5], ci_sc$percent[5], ci_qv$percent[5]), 2))
+
+```
+
+Then I used the model fits to estimate theoretical percentiles and confidence intervals.
+
+```{r, echo=FALSE}
+#| label: tbl-q90-final
+
+q90_model_point <- list(
+  fl = qlnorm(0.9, meanlog = fit_fl_logn$estimate["meanlog"], sdlog = fit_fl_logn$estimate["sdlog"]),
+  sc = qnorm (0.9, mean    = fit_sc_norm$estimate["mean"],     sd    = fit_sc_norm$estimate["sd"]),
+  qv = qlnorm(0.9, meanlog = fit_qv_logn$estimate["meanlog"], sdlog = fit_qv_logn$estimate["sdlog"]))
+
+q90_model_ci <- function(fit, dist, n, B = 1000) {
+  boot_q90 <- replicate(B, {
+    sim <- if (dist == "normal") {
+      rnorm(n, mean = fit$estimate["mean"], sd = fit$estimate["sd"])}
+    else {
+      rlnorm(n, meanlog = fit$estimate["meanlog"], sdlog = fit$estimate["sdlog"])}
+    quantile(sim, 0.9)})
+  quantile(boot_q90, c(0.025, 0.975))}
+
+n_fl <- nrow(pedestrian_df)
+n_sc <- nrow(pedestrian_df)
+n_qv <- nrow(pedestrian_df)
+
+ci_fl_m <- q90_model_ci(fit_fl_logn, "lognormal", n_fl)
+ci_sc_m <- q90_model_ci(fit_sc_norm, "normal", n_sc)
+ci_qv_m <- q90_model_ci(fit_qv_logn, "lognormal", n_qv)
+
+model_tbl <- tibble(
+  crossing       = c("Flinders Street","Southern Cross","QV Melbourne"),
+  model          = c("lognormal","normal","lognormal"),
+  q90_model      = round(c(q90_model_point$fl, q90_model_point$sc, q90_model_point$qv), 2),
+  q90_model_low  = round(c(ci_fl_m[1], ci_sc_m[1], ci_qv_m[1]), 2),
+  q90_model_high = round(c(ci_fl_m[2], ci_sc_m[2], ci_qv_m[2]), 2))
+
+final_tbl <- sample_tbl %>%
+  left_join(model_tbl, by = "crossing")
+
+final_tbl %>%
+  kable(
+    caption = "Comparison of empirical and model-based 90th percentile estimates with 95% confidence intervals for each crossing",
+    digits = 1,
+    align = rep("c", ncol(.))) %>%
+  kable_styling(
+    bootstrap_options = c("striped", "hover", "condensed", "responsive"),
+    full_width = FALSE,
+    position = "center") %>%
+  row_spec(0, bold = TRUE, color = "#FFFFFF", background = "#598392") %>%
+  column_spec(1, bold = TRUE, color = "#004D40")
+
+```
+
+The interesting part is that both approaches lined up almost perfectly. That gave confidence that the models were capturing the behaviour well. QV Melbourne showed a very high threshold, well above 2600. Southern Cross and Flinders Street sat around the 900 to 1000 mark.
 
 

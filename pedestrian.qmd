@@ -145,6 +145,98 @@ pedestrian_long %>%
 
 At this stage it already felt like QV Melbourne was in a different league. It is not just busy. It is volatile. That volatility becomes important once we start modelling.
 
+## Choosing Statistical Models That Fit
+
+To describe each crossing in a way that is useful for prediction and design, I fit Normal, Lognormal, and Gamma models. I did this for each site and compared the fits through likelihood values and visual diagnostics.
+
+```{r, echo=FALSE}
+#| label: tbl-mle
+
+# Southern Cross
+sc <- pedestrian_df$southern_cross
+fit_sc_norm  <- fitdistr(sc, "normal")
+fit_sc_logn  <- fitdistr(sc, "lognormal")
+fit_sc_gamma <- fitdistr(sc, "gamma")   
+
+sc_models <- tibble(
+  crossing = "Southern Cross",
+  model    = c("normal","lognormal","gamma"),
+  logLik   = c(logLik(fit_sc_norm)[1],  logLik(fit_sc_logn)[1],  logLik(fit_sc_gamma)[1]),
+  AIC      = c(AIC(fit_sc_norm),        AIC(fit_sc_logn),        AIC(fit_sc_gamma)),
+  
+  mean_est = c(
+    unname(fit_sc_norm$estimate["mean"]),
+    exp(fit_sc_logn$estimate["meanlog"] + 0.5*fit_sc_logn$estimate["sdlog"]^2),
+    unname(fit_sc_gamma$estimate["shape"] / fit_sc_gamma$estimate["rate"])),
+  
+  sd_est   = c(
+    unname(fit_sc_norm$estimate["sd"]),
+    sqrt((exp(fit_sc_logn$estimate["sdlog"]^2) - 1) *
+           exp(2*fit_sc_logn$estimate["meanlog"] + fit_sc_logn$estimate["sdlog"]^2)),
+    sqrt(unname(fit_sc_gamma$estimate["shape"]) / (unname(fit_sc_gamma$estimate["rate"])^2))))
+
+# Flinders Street
+fl <- pedestrian_df$flinders_street
+fit_fl_norm  <- fitdistr(fl, "normal")
+fit_fl_logn  <- fitdistr(fl, "lognormal")
+fit_fl_gamma <- fitdistr(fl, "gamma")
+
+fl_models <- tibble(
+  crossing = "Flinders Street",
+  model    = c("normal","lognormal","gamma"),
+  logLik   = c(logLik(fit_fl_norm)[1],  logLik(fit_fl_logn)[1],  logLik(fit_fl_gamma)[1]),
+  AIC      = c(AIC(fit_fl_norm),        AIC(fit_fl_logn),        AIC(fit_fl_gamma)),
+  
+  mean_est = c(
+    unname(fit_fl_norm$estimate["mean"]),
+    exp(fit_fl_logn$estimate["meanlog"] + 0.5*fit_fl_logn$estimate["sdlog"]^2),
+    unname(fit_fl_gamma$estimate["shape"] / fit_fl_gamma$estimate["rate"])),
+  
+  sd_est   = c(
+    unname(fit_fl_norm$estimate["sd"]),
+    sqrt((exp(fit_fl_logn$estimate["sdlog"]^2) - 1) *
+           exp(2*fit_fl_logn$estimate["meanlog"] + fit_fl_logn$estimate["sdlog"]^2)),
+    sqrt(unname(fit_fl_gamma$estimate["shape"]) / (unname(fit_fl_gamma$estimate["rate"])^2))))
+
+# QV Melbourne
+qv <- pedestrian_df$qv_melbourne
+fit_qv_norm  <- fitdistr(qv, "normal")
+fit_qv_logn  <- fitdistr(qv, "lognormal")
+fit_qv_gamma <- fitdistr(qv, "gamma")
+
+qv_models <- tibble(
+  crossing = "QV Melbourne",
+  model    = c("normal","lognormal","gamma"),
+  logLik   = c(logLik(fit_qv_norm)[1],  logLik(fit_qv_logn)[1],  logLik(fit_qv_gamma)[1]),
+  AIC      = c(AIC(fit_qv_norm),        AIC(fit_qv_logn),        AIC(fit_qv_gamma)),
+  
+  mean_est = c(
+    unname(fit_qv_norm$estimate["mean"]),
+    exp(fit_qv_logn$estimate["meanlog"] + 0.5*fit_qv_logn$estimate["sdlog"]^2),
+    unname(fit_qv_gamma$estimate["shape"] / fit_qv_gamma$estimate["rate"])),
+  
+  sd_est   = c(
+    unname(fit_qv_norm$estimate["sd"]),
+    sqrt((exp(fit_qv_logn$estimate["sdlog"]^2) - 1) *
+           exp(2*fit_qv_logn$estimate["meanlog"] + fit_qv_logn$estimate["sdlog"]^2)),
+    sqrt(unname(fit_qv_gamma$estimate["shape"]) / (unname(fit_qv_gamma$estimate["rate"])^2))))
+
+mle_fits <- bind_rows(sc_models, fl_models, qv_models) %>%
+  arrange(crossing, AIC)
+
+mle_fits  %>%
+  kable(
+    caption = "Maximum-likelihood estimates for Normal, Lognormal and Gamma models across the three crossings.",
+    digits = 1,
+    align = rep("c")) %>%
+  kable_styling(
+    bootstrap_options = c("striped", "hover", "condensed", "responsive"),
+    full_width = FALSE,
+    position = "center") %>%
+  row_spec(0, bold = TRUE, color = "#FFFFFF", background = "#598392") %>%
+  column_spec(1, bold = TRUE, color = "#004D40")
+```
+
 
 
 

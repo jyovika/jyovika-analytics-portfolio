@@ -1,0 +1,26 @@
+---
+title: "How Busy Are Melbourne’s CBD Crossings? A Statistical Deep Dive"
+description: "Modelling pedestrian flows at Southern Cross, Flinders Street, and QV Melbourne using probability models, bootstrapping, and confidence intervals."
+author: "Jyovika Aswale"
+date: 2 December 2025
+categories: [R, Statistics, Pedestrian counts, Melbourne]
+format:
+  html:
+    toc: true
+    toc-location: left
+    code-summary: "Show code"
+    df-print: default
+---
+
+::: {.callout-note collapse="true" icon="people" title="Collaboration & Original Assignment"}
+This analysis began as a group assignment for our Statistical Thinking unit, completed together with **Sia Chawla** and **Siddhi Jadhav**.  
+The core data wrangling, modelling, and statistical code were developed collaboratively.
+
+This blog post is my own adapted version for my analytics portfolio, I’ve rewritten the narrative, added explanations, and restructured the presentation for a broader readership, but the underlying work is **not solely my own**.
+
+You can find the original group repository here:  
+👉 **Original Assignment GitHub Repo:** <https://github.com/jyovika/Pedestrian_Crossings_Data_Analysis> 
+:::
+
+
+

@@ -1,44 +1,38 @@
-README
-================
-Jyovika Aswale
-2025-12-02
+---
+title: "README"
+author: "Jyovika Aswale"
+date: "2025-12-02"
+output: github_document
+---
 
 # Jyovika Aswale: Analytics Portfolio
 
-This repository contains a curated collection of data analysis projects
-written in R and published through Quarto. Each project focuses on clear
-statistical reasoning, polished visualisation, and insights that connect
-data to real decision making.
+This repository contains a curated collection of data analysis projects written in R and published through Quarto. Each project focuses on clear statistical reasoning, polished visualisation, and insights that connect data to real decision making.
 
 I use this portfolio to demonstrate my approach to analysis:
 
-- Start with exploration, understand how the data behaves, choose
-  suitable models, test assumptions, communicate uncertainty, and
-  present results in a way that anyone can understand.
+  - Start with exploration, understand how the data behaves, choose suitable models, test assumptions, communicate uncertainty, and present results in a way that anyone can understand.
 
 ## 🔍 What You Will Find Here
 
 #### Data Analysis and Modelling
 
-- Distribution fitting
-- Simulation and bootstrapping
-- Regression and sensitivity analysis
-- Hypothesis testing and confidence interval estimation
-- Exploratory data analysis with tidy workflows
+  - Distribution fitting
+  - Simulation and bootstrapping
+  - Regression and sensitivity analysis
+  - Hypothesis testing and confidence interval estimation
+  - Exploratory data analysis with tidy workflows
 
 #### Visualisation and Communication
-
-- ggplot2 graphics designed for clarity
-- Diagnostic plots that show how models behave
-- Story driven blog posts published through Quarto
-- Layouts and themes created with custom CSS
-
+  - ggplot2 graphics designed for clarity
+  - Diagnostic plots that show how models behave
+  - Story driven blog posts published through Quarto
+  - Layouts and themes created with custom CSS
+  
 #### Reproducible Workflows
-
-- Each project is built in Quarto
-- Code, data, and results stay together
-- The repository contains all supporting scripts and assets needed to
-  rebuild the site
+  - Each project is built in Quarto
+  - Code, data, and results stay together
+  - The repository contains all supporting scripts and assets needed to rebuild the site
 
 ## 📂 Featured Projects
 
@@ -51,35 +45,35 @@ An R powered exploration of Formula 1 data
 - Highlights:
 
   - Cleaning and transforming multi season F1 datasets
-
+  
   - Measuring the impact of a single second lost in the pit lane
-
+  
   - Sensitivity analysis to compare team performance
-
+  
   - Custom colour palettes and visual styling
-
+  
 - Blog: available on my website
 
 #### 2. How Busy Are Melbourne’s CBD Crossings?
 
 A statistical deep dive into pedestrian flow
 
-- Skills: distribution fitting, bootstrapping, model diagnostics,
-  visualisation
+- Skills: distribution fitting, bootstrapping, model diagnostics, visualisation
 
 - Highlights:
 
   - Normal, Lognormal, and Gamma modelling
-
+  
   - Bootstrap simulation for percentile estimation
-
+  
   - Engineering style decision analysis based on traffic thresholds
-
+  
   - Revenue estimation using binomial proportion confidence intervals
-
+  
 - Blog: available on my website
 
-``` bash
+
+```{bash, eval = FALSE}
 .
 ├── .quarto/                     # Quarto configuration and site system files
 ├── data/                        # Datasets used in the analytics projects
@@ -100,12 +94,12 @@ This site uses a custom CSS theme created from scratch.
 
 Key features include:
 
-- soft green palette for headings and accents
-- redesigned navigation and callouts
-- typography that supports long form analytics writing
-- consistent styling across plots, tables, and metadata
-- You can view and reuse the theme in styles.css.
-
+  - soft green palette for headings and accents
+  - redesigned navigation and callouts
+  - typography that supports long form analytics writing
+  - consistent styling across plots, tables, and metadata
+  - You can view and reuse the theme in styles.css.
+  
 ## 🌐 View the Live Portfolio
 
 The full site is deployed on GitHub Pages:
@@ -116,7 +110,7 @@ The full site is deployed on GitHub Pages:
 
 If you want to render the full site:
 
-``` r
+```{r, eval=FALSE}
 # install required packages
 install.packages(c("tidyverse", "MASS", "boot", "broom", "here"))
 
@@ -130,11 +124,10 @@ Some projects began as university group assignments.
 
 I expanded and rewrote the analysis for public presentation.
 
-Original contributors are acknowledged inside the relevant posts.🤝
-Collaboration Notes
+Original contributors are acknowledged inside the relevant posts.🤝 Collaboration Notes
 
 ## 📫 Contact
 
 If you want to talk about analytics, visualisation, or collaboration:
 
-Email: <jyovika.aswale@gmail.com>
+Email: jyovika.aswale@gmail.com

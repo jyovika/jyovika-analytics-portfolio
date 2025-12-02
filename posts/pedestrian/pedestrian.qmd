@@ -421,7 +421,6 @@ paired_tt_tbl <- tibble(
 
 paired_tt_tbl %>%
   kable(
-    caption = "Paired t-test results comparing Southern Cross and Flinders Street (95% confidence interval for mean difference).",
     digits = 2,
     align = rep("c", ncol(.))) %>%
   kable_styling(
@@ -522,6 +521,7 @@ A lollipop chart showed the contrasts clearly.
 
 ```{r, echo=FALSE}
 #| label: fig-task4-traffic
+#| fig-cap: "Pedestrian Traffic with 95% Confidence Intervals"
 
 ggplot(tt_table, aes(x = Location, y = Mean, color = Location)) +
   geom_point(size = 4) +
@@ -529,7 +529,6 @@ ggplot(tt_table, aes(x = Location, y = Mean, color = Location)) +
   geom_segment(aes(xend = Location, y = 0, yend = Mean), color = "grey80") +
   scale_color_manual(values = cross_cols) +
   labs(
-    title = "Pedestrian Traffic with 95% Confidence Intervals",
     y = "Mean pedestrians per hour",
     x = "Location") +
   theme_minimal(base_size = 14) +
@@ -546,6 +545,7 @@ One final practical question emerged. If a bank paid a base amount plus a bonus 
 I calculated the proportion of days above that threshold using Wilson confidence intervals.
 ```{r}
 #| label: tbl-task5-revenue
+#| tbl-cap: "Estimated expected revenue and 95% confidence intervals for each crossing using the Wilson score interval."
 
 THRESH  <- 1000
 BASE    <- 10000
@@ -575,7 +575,6 @@ rev_ci <- rev_ci[, c("crossing","n", "k", "phat", "lo_p", "hi_p", "rev_hat", "re
 
 rev_ci %>%
   kable(
-    caption = "Estimated expected revenue and 95% confidence intervals for each crossing using the Wilson score interval.",
     col.names = c("Crossing", "n", "k", "Proportion >1000", "CI (Low)", "CI (High)", "Estimated Revenue", "Revenue CI (Low)", "Revenue CI (High)"),
     digits = 1,
     align = rep("c", ncol(.))) %>%
@@ -604,7 +603,6 @@ ggplot(rev_ci, aes(x = reorder(crossing, rev_hat), y = rev_hat)) +
     expand = expansion(mult = c(0, 0.08))) +
   coord_flip() +
   labs(
-    title = "Expected Revenue under Bank Offer",
     x = NULL, y = "Expected revenue") +
   theme_minimal(base_size = 12) +
   theme(legend.position = "none")

@@ -495,7 +495,7 @@ tt_fl <- t.test(pedestrian_df$flinders_street, conf.level = 0.95)
 tt_qv <- t.test(pedestrian_df$qv, conf.level = 0.95)
 ```
 
-```{r}
+```{r, echo=FALSE}
 #| label: tbl-task4-ttest
 #| tbl-cap: "Mean pedestrian counts and 95% confidence intervals for each crossing (one-sample t-tests)"
 
@@ -543,7 +543,7 @@ QV Melbourne stands out strongly again. It is not only busy but consistently bus
 One final practical question emerged. If a bank paid a base amount plus a bonus depending on how often a site exceeded 1000 people per hour, which crossing would earn the most?
 
 I calculated the proportion of days above that threshold using Wilson confidence intervals.
-```{r}
+```{r, echo=FALSE}
 #| label: tbl-task5-revenue
 #| tbl-cap: "Estimated expected revenue and 95% confidence intervals for each crossing using the Wilson score interval."
 

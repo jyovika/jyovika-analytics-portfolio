@@ -237,7 +237,56 @@ mle_fits  %>%
   column_spec(1, bold = TRUE, color = "#004D40")
 ```
 
+To validate these choices visually, I used QQ plots.
 
+```{r, echo=FALSE}
+#| label: fig-qqplots
+#| fig-cap: "QQ plots comparing empirical and theoretical quantiles for the fitted Normal, Lognormal and Gamma models at each crossing."
+#| warning: false
+
+par(mfrow = c(1,3), mar = c(4,4,2,1))
+
+## Southern Cross 
+x <- sort(sc); n <- length(x); p <- (seq_len(n) - 0.5) / n
+qN <- qnorm(p,  mean = fit_sc_norm$estimate["mean"],    sd = fit_sc_norm$estimate["sd"])
+qL <- qlnorm(p, meanlog = fit_sc_logn$estimate["meanlog"], sdlog = fit_sc_logn$estimate["sdlog"])
+qG <- qgamma(p, shape = fit_sc_gamma$estimate["shape"], rate = fit_sc_gamma$estimate["rate"])
+
+plot(qN, x, xlab = "Theoretical quantiles", ylab = "Empirical quantiles",
+     main = "Southern Cross", pch = 16, col = "#8F250C", cex = 0.8)
+points(qL, x, pch = 16, col = "#9cb380", cex = 0.8)
+points(qG, x, pch = 16, col = "#124559", cex = 0.8)
+abline(0, 1, lty = 2)
+legend("topleft", legend = c("Normal", "Lognormal", "Gamma"),
+       col = c("#8F250C", "#9cb380", "#124559"), pch = 16, bty = "n", cex = 0.8)
+
+# Flinders Street
+x <- sort(fl); n <- length(x); p <- (seq_len(n) - 0.5) / n
+qN <- qnorm(p,  mean = fit_fl_norm$estimate["mean"],    sd = fit_fl_norm$estimate["sd"])
+qL <- qlnorm(p, meanlog = fit_fl_logn$estimate["meanlog"], sdlog = fit_fl_logn$estimate["sdlog"])
+qG <- qgamma(p, shape = fit_fl_gamma$estimate["shape"], rate = fit_fl_gamma$estimate["rate"])
+
+plot(qN, x, xlab = "Theoretical quantiles", ylab = "Empirical quantiles",
+     main = "Flinders Street", pch = 16, col = "#8F250C", cex = 0.8)
+points(qL, x, pch = 16, col = "#9cb380", cex = 0.8)
+points(qG, x, pch = 16, col = "#124559", cex = 0.8)
+abline(0, 1, lty = 2)
+
+# QV Melbourne 
+x <- sort(qv); n <- length(x); p <- (seq_len(n) - 0.5) / n
+qN <- qnorm(p,  mean = fit_qv_norm$estimate["mean"],    sd = fit_qv_norm$estimate["sd"])
+qL <- qlnorm(p, meanlog = fit_qv_logn$estimate["meanlog"], sdlog = fit_qv_logn$estimate["sdlog"])
+qG <- qgamma(p, shape = fit_qv_gamma$estimate["shape"], rate = fit_qv_gamma$estimate["rate"])
+
+plot(qN, x, xlab = "Theoretical quantiles", ylab = "Empirical quantiles",
+     main = "QV Melbourne", pch = 16, col = "#8F250C", cex = 0.8)
+points(qL, x, pch = 16, col = "#9cb380", cex = 0.8)
+points(qG, x, pch = 16, col = "#124559", cex = 0.8)
+abline(0, 1, lty = 2)
+
+```
+
+The results made sense intuitively. Southern Cross behaves in a more symmetric way so the Normal model works there. Flinders Street and QV Melbourne are right skewed so the Lognormal model captures their structure better. These choices become important later once we start estimating upper percentiles and running simulations.
 
 
 

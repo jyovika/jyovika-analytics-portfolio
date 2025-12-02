@@ -119,6 +119,7 @@ QV Melbourne clearly carries the heaviest flow. Southern Cross and Flinders Stre
 The summary statistics confirm these observations.
 ```{r, echo=FALSE}
 #| label: tbl-crossing-summary
+#| tbl-cap: "Descriptive statistics for pedestrian counts at each crossing."
 pedestrian_long %>%
   group_by(crossing) %>%
   summarise(
@@ -151,6 +152,7 @@ To describe each crossing in a way that is useful for prediction and design, I f
 
 ```{r, echo=FALSE}
 #| label: tbl-mle
+#| tbl-cap: "Maximum-likelihood estimates for Normal, Lognormal and Gamma models across the three crossings."
 
 # Southern Cross
 sc <- pedestrian_df$southern_cross
@@ -226,7 +228,6 @@ mle_fits <- bind_rows(sc_models, fl_models, qv_models) %>%
 
 mle_fits  %>%
   kable(
-    caption = "Maximum-likelihood estimates for Normal, Lognormal and Gamma models across the three crossings.",
     col.names = c("Crossing", "Model", "Log-Likelihood", "AIC", "Mean Estimate", "SD Estimate"),
     digits = 1,
     align = rep("c")) %>%
@@ -302,11 +303,12 @@ The bootstrap method shows how the estimate varies if the data were resampled re
 
 ```{r, echo=FALSE}
 #| label: tbl-q90-sample
+#| tbl-cap: "Empirical 90th percentile estimates and 95% bootstrap confidence intervals for each crossing"
 
 pedestrian_long %>%
   group_by(crossing) %>%
   summarise(q90 = quantile(count, 0.9)) %>%
-  kable(caption = "Empirical 90th percentile estimates and 95% bootstrap confidence intervals for each crossing",
+  kable(
         digits = 1, align = c("l","r")) %>%
   kable_styling(
     bootstrap_options = c("striped", "hover", "condensed", "responsive"),
@@ -344,6 +346,7 @@ Then I used the model fits to estimate theoretical percentiles and confidence in
 
 ```{r, echo=FALSE}
 #| label: tbl-q90-final
+#| tbl-cap: "Comparison of empirical and model-based 90th percentile estimates with 95% confidence intervals for each crossing"
 
 q90_model_point <- list(
   fl = qlnorm(0.9, meanlog = fit_fl_logn$estimate["meanlog"], sdlog = fit_fl_logn$estimate["sdlog"]),
@@ -379,7 +382,6 @@ final_tbl <- sample_tbl %>%
 
 final_tbl %>%
   kable(
-    caption = "Comparison of empirical and model-based 90th percentile estimates with 95% confidence intervals for each crossing",
     digits = 1,
     align = rep("c", ncol(.))) %>%
   kable_styling(
@@ -400,6 +402,7 @@ A paired t test gave a clear answer.
 
 ```{r, echo=FALSE}
 #| label: tbl-t-test
+#| tbl-cap: "Paired t-test results comparing Southern Cross and Flinders Street (95% confidence interval for mean difference)."
 
 df  <- na.omit(pedestrian_df[, c("southern_cross","flinders_street")])
 sc  <- df$southern_cross
@@ -452,6 +455,7 @@ Then illustrated the estimate and confidence interval.
 ```{r, echo=FALSE}
 #| label: fig-ci
 #| fig-cap: "95% confidence interval for the mean difference between Southern Cross and Flinders Street. Shaded area shows +-80 people/hour design tolerance."
+#| subtitle: "Shaded zone = +-80 people/hour (design tolerance)"
 
 ci <- tibble(
   estimate = tt$estimate,
@@ -470,8 +474,6 @@ ggplot(ci) +
   coord_cartesian(ylim = c(-120, 120)) +
   scale_x_continuous(limits = c(0.5, 1.5), breaks = NULL) +
   labs(
-    title = "95% CI for Mean Difference: Southern Cross-Flinders",
-    subtitle = "Shaded zone = +-80 people/hour (design tolerance)",
     y = "Difference in mean counts (SC-FL)",
     x = NULL) +
   theme_minimal(base_size = 13)
@@ -496,6 +498,7 @@ tt_qv <- t.test(pedestrian_df$qv, conf.level = 0.95)
 
 ```{r}
 #| label: tbl-task4-ttest
+#| tbl-cap: "Mean pedestrian counts and 95% confidence intervals for each crossing (one-sample t-tests)"
 
 tt_table <- tibble(
   Location = c("Southern Cross", "Flinders Street", "QV Melbourne"),
@@ -505,7 +508,6 @@ tt_table <- tibble(
 
 tt_table %>%
   kable(
-    caption = "Mean pedestrian counts and 95% confidence intervals for each crossing (one-sample t-tests)",
     digits = 1,
     align = rep("c", ncol(.))) %>%
   kable_styling(
@@ -622,8 +624,8 @@ Data lets us see these places as more than busy intersections. They become syste
 ::: {.callout-tip collapse="true" title="Click to View Full Code and Data"}
 Full datasets, scripts, and the original group project are available here:
 
-- Group source code: https://github.com/USERNAME/ORIGINAL-REPO  
-- My analytics portfolio repository: https://github.com/USERNAME/PORTFOLIO-REPO
+- Group source code: <https://github.com/jyovika/Pedestrian_Crossings_Data_Analysis>  
+- My analytics portfolio repository: <https://github.com/jyovika/jyovika-analytics-portfolio>
 :::
 
 

@@ -57,24 +57,21 @@ team_palette <- c(
   "Manor/Marussia"        = "#9C89B8",
   "HRT"                   = "#7E6B8F",
   "Virgin"                = "#5A4D7C")
-
-
-
 ```
 
 ```{r, load_data, message=FALSE, echo=FALSE}
 ## Load data
-pitstops_df <- read.csv(here::here("data/pit_stops.csv"))
+pitstops_df <- read.csv(here::here("data/f1/pit_stops.csv"))
 
-results_df <- read.csv(here::here("data/results.csv"))
+results_df <- read.csv(here::here("data/f1/results.csv"))
 
-race_df <- read.csv(here::here("data/races.csv"))
+race_df <- read.csv(here::here("data/f1/races.csv"))
 
-driver_df <- read.csv(here::here("data/drivers.csv"))
+driver_df <- read.csv(here::here("data/f1/drivers.csv"))
 
-constructor_df <- read.csv(here::here("data/constructors.csv"))
+constructor_df <- read.csv(here::here("data/f1/constructors.csv"))
 
-status_df <- read.csv(here::here("data/status.csv"))
+status_df <- read.csv(here::here("data/f1/status.csv"))
 ```
 
 ```{r,data_processing, echo=FALSE}

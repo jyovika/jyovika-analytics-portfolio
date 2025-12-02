@@ -1,6 +1,8 @@
 project:
   type: website
   output-dir: docs
+  sitemap: true
+  rss: true
 
 website:
   site-url: "https://jyovika.github.io/jyovika-analytics-portfolio/"

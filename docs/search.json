@@ -70,10 +70,73 @@
     "text": "Conclusion\nPit stops matter, but not always in the dramatic way commentary suggests. One second typically costs less than a tenth of a finishing place but the impact becomes powerful when repeated across races, seasons or drivers.\nGrid position remains the strongest determinant of outcome and race pace is the engine of everything. Pit crews are not out to perform miracles, they are fighting to avoid thousands of small cuts.\nIn Formula One, fractions are currency, and pit time is one of them."
   },
   {
+    "objectID": "posts/pedestrian/pedestrian.html",
+    "href": "posts/pedestrian/pedestrian.html",
+    "title": "How Busy Are Melbourne’s CBD Crossings? A Statistical Deep Dive",
+    "section": "",
+    "text": "Collaboration & Original Assignment\n\n\n\n\n\nThis analysis began as a group assignment for our Statistical Thinking unit, completed together with Sia Chawla and Siddhi Jadhav.\nThe core data wrangling, modelling, and statistical code were developed collaboratively.\nThis blog post is my own adapted version for my analytics portfolio, I’ve rewritten the narrative, added explanations, and restructured the presentation for a broader readership, but the underlying work is not solely my own.\nYou can find the original group repository here:\n👉 Original Assignment GitHub Repo: https://github.com/jyovika/Pedestrian_Crossings_Data_Analysis"
+  },
+  {
+    "objectID": "posts/pedestrian/pedestrian.html#introduction",
+    "href": "posts/pedestrian/pedestrian.html#introduction",
+    "title": "How Busy Are Melbourne’s CBD Crossings? A Statistical Deep Dive",
+    "section": "Introduction",
+    "text": "Introduction\nThe centre of Melbourne is full of movement and energy. Every day thousands of people pass through places like Southern Cross, Flinders Street, and QV Melbourne. At first glance it feels chaotic. Underneath that movement however is a pattern. I wanted to understand those patterns and tell a story about how these three locations behave.\nI approached this like a real analytics problem. Start with descriptive exploration. Fit distributions that reflect the character of each location. Estimate meaningful quantities for planning and design. Compare sites in a way that answers the practical questions that planners and marketers actually care about. By the end of the analysis, these three crossings no longer felt like random busy spots on a map. They felt like distinct personalities with their own rhythms and their own commercial and operational implications."
+  },
+  {
+    "objectID": "posts/pedestrian/pedestrian.html#first-impressions-through-visuals",
+    "href": "posts/pedestrian/pedestrian.html#first-impressions-through-visuals",
+    "title": "How Busy Are Melbourne’s CBD Crossings? A Statistical Deep Dive",
+    "section": "First Impressions Through Visuals",
+    "text": "First Impressions Through Visuals\nTo get a feel for how each location behaves, I plotted boxplots and density curves. These gave a surprisingly clear first impression.\n\n\n\n\n\n\n\n\n\n\nFigure 1: Pedestrian counts by crossing.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nFigure 2: Distribution of pedestrian counts by crossing.\n\n\n\n\n\n\n\nQV Melbourne clearly carries the heaviest flow. Southern Cross and Flinders Street sit closer together although Flinders has slightly lower typical values. All three distributions show right skew which tells us they have occasional high traffic bursts.\nThe summary statistics confirm these observations.\n\n\n\n\nTable 1: Descriptive statistics for pedestrian counts at each crossing.\n\n\n\n\n\n\n\nCrossing\nn\nMean\nMedian\nSD\nMin\nMax\nIQR\n\n\n\n\nSouthern Cross\n97\n941.8\n955\n133.0\n494\n1256\n143\n\n\nFlinders Street\n97\n893.0\n887\n147.9\n590\n1282\n202\n\n\nQV Melbourne\n97\n2336.7\n2310\n304.9\n1773\n3122\n462\n\n\n\n\n\n\n\n\n\nAt this stage it already felt like QV Melbourne was in a different league. It is not just busy. It is volatile. That volatility becomes important once we start modelling."
+  },
+  {
+    "objectID": "posts/pedestrian/pedestrian.html#choosing-statistical-models-that-fit",
+    "href": "posts/pedestrian/pedestrian.html#choosing-statistical-models-that-fit",
+    "title": "How Busy Are Melbourne’s CBD Crossings? A Statistical Deep Dive",
+    "section": "Choosing Statistical Models That Fit",
+    "text": "Choosing Statistical Models That Fit\nTo describe each crossing in a way that is useful for prediction and design, I fit Normal, Lognormal, and Gamma models. I did this for each site and compared the fits through likelihood values and visual diagnostics.\n\n\n\n\nTable 2: Maximum-likelihood estimates for Normal, Lognormal and Gamma models across the three crossings.\n\n\n\n\n\n\n\nCrossing\nModel\nLog-Likelihood\nAIC\nMean Estimate\nSD Estimate\n\n\n\n\nFlinders Street\nlognormal\n-619.6\n1243.3\n893.0\n146.8\n\n\nFlinders Street\ngamma\n-620.0\n1244.0\n893.0\n145.7\n\n\nFlinders Street\nnormal\n-621.8\n1247.6\n893.0\n147.1\n\n\nQV Melbourne\nlognormal\n-690.0\n1384.1\n2336.6\n301.0\n\n\nQV Melbourne\ngamma\n-690.5\n1384.9\n2336.7\n300.3\n\n\nQV Melbourne\nnormal\n-692.0\n1387.9\n2336.7\n303.3\n\n\nSouthern Cross\nnormal\n-611.5\n1227.0\n941.8\n132.3\n\n\nSouthern Cross\ngamma\n-614.7\n1233.4\n941.8\n137.7\n\n\nSouthern Cross\nlognormal\n-617.0\n1238.0\n942.3\n142.4\n\n\n\n\n\n\n\n\n\nTo validate these choices visually, I used QQ plots.\n\n\n\n\n\n\n\n\nFigure 3: QQ plots comparing empirical and theoretical quantiles for the fitted Normal, Lognormal and Gamma models at each crossing.\n\n\n\n\n\nThe results made sense intuitively. Southern Cross behaves in a more symmetric way so the Normal model works there. Flinders Street and QV Melbourne are right skewed so the Lognormal model captures their structure better. These choices become important later once we start estimating upper percentiles and running simulations."
+  },
+  {
+    "objectID": "posts/pedestrian/pedestrian.html#understanding-the-busiest-days",
+    "href": "posts/pedestrian/pedestrian.html#understanding-the-busiest-days",
+    "title": "How Busy Are Melbourne’s CBD Crossings? A Statistical Deep Dive",
+    "section": "Understanding the Busiest Days",
+    "text": "Understanding the Busiest Days\nPlanners often care about the 90th percentile flow. It is the level of traffic that only occurs on the busiest one out of ten days. If a crossing struggles at this level it gets congested.\nTo estimate this level, I used both:\n\ndirect quantiles from the sample\nbootstrap confidence intervals\nmodel based percentile estimates\n\nThe bootstrap method shows how the estimate varies if the data were resampled repeatedly.\n\n\n\n\nTable 3: Empirical 90th percentile estimates and 95% bootstrap confidence intervals for each crossing\n\n\n\n\n\n\n\ncrossing\nq90\n\n\n\n\nSouthern Cross\n1090.0\n\n\nFlinders Street\n1060.8\n\n\nQV Melbourne\n2704.0\n\n\n\n\n\n\n\n\n\nThen I used the model fits to estimate theoretical percentiles and confidence intervals.\n\n\n\n\nTable 4: Comparison of empirical and model-based 90th percentile estimates with 95% confidence intervals for each crossing\n\n\n\n\n\n\n\ncrossing\nq90_sample\nq90_sample_low\nq90_sample_high\nmodel\nq90_model\nq90_model_low\nq90_model_high\n\n\n\n\nFlinders Street\n1060.8\n1038.6\n1157.1\nlognormal\n1086.3\n1030.6\n1142.2\n\n\nSouthern Cross\n1090.0\n1057.2\n1128.0\nnormal\n1111.4\n1066.2\n1150.2\n\n\nQV Melbourne\n2704.0\n2624.0\n2939.0\nlognormal\n2731.7\n2614.4\n2836.3\n\n\n\n\n\n\n\n\n\nThe interesting part is that both approaches lined up almost perfectly. That gave confidence that the models were capturing the behaviour well. QV Melbourne showed a very high threshold, well above 2600. Southern Cross and Flinders Street sat around the 900 to 1000 mark."
+  },
+  {
+    "objectID": "posts/pedestrian/pedestrian.html#are-two-crossings-similar-enough-for-a-shared-design",
+    "href": "posts/pedestrian/pedestrian.html#are-two-crossings-similar-enough-for-a-shared-design",
+    "title": "How Busy Are Melbourne’s CBD Crossings? A Statistical Deep Dive",
+    "section": "Are Two Crossings Similar Enough for a Shared Design?",
+    "text": "Are Two Crossings Similar Enough for a Shared Design?\nAt one stage the engineering question was straightforward. If Southern Cross and Flinders Street differed by more than 80 people per hour on average, they would need separate designs.\nA paired t test gave a clear answer.\n\n\n\n\nTable 5: Paired t-test results comparing Southern Cross and Flinders Street (95% confidence interval for mean difference).\n\n\n\n\n\n\n\nComparison\nMean_Diff\n95% CI (Low)\n95% CI (High)\nt_value\ndf\np_value\n\n\n\n\nSouthern Cross − Flinders Street\n48.75\n20.86\n76.64\n3.47\n96\n0\n\n\n\n\n\n\n\n\n\nI checked the normality of differences.\n\n\n\n\n\n\n\n\nFigure 4: QQ plot of paired differences (Southern Cross - Flinders Street) showing approximate normality.\n\n\n\n\n\nThen illustrated the estimate and confidence interval.\n\n\n\n\n\n\n\n\nFigure 5: 95% confidence interval for the mean difference between Southern Cross and Flinders Street. Shaded area shows +-80 people/hour design tolerance.\n\n\n\n\n\nThe confidence interval stayed below 80. This means the two locations are similar enough to share the same physical design. It is a simple result but it has real engineering implications and potential cost savings."
+  },
+  {
+    "objectID": "posts/pedestrian/pedestrian.html#which-location-offers-the-best-marketing-opportunity",
+    "href": "posts/pedestrian/pedestrian.html#which-location-offers-the-best-marketing-opportunity",
+    "title": "How Busy Are Melbourne’s CBD Crossings? A Statistical Deep Dive",
+    "section": "Which Location Offers the Best Marketing Opportunity?",
+    "text": "Which Location Offers the Best Marketing Opportunity?\nPedestrian flow directly relates to advertising value. To compare locations fairly, I estimated the mean counts and their confidence intervals.\n\n\n\n\nTable 6: Mean pedestrian counts and 95% confidence intervals for each crossing (one-sample t-tests)\n\n\n\n\n\n\n\nLocation\nMean\n95% CI (Low)\n95% CI (High)\n\n\n\n\nSouthern Cross\n941.8\n915.0\n968.6\n\n\nFlinders Street\n893.0\n863.2\n922.8\n\n\nQV Melbourne\n2336.7\n2275.3\n2398.2\n\n\n\n\n\n\n\n\n\nA lollipop chart showed the contrasts clearly.\n\n\n\n\n\n\n\n\nFigure 6: Pedestrian Traffic with 95% Confidence Intervals\n\n\n\n\n\nQV Melbourne stands out strongly again. It is not only busy but consistently busy. Southern Cross and Flinders Street are steady but sit at roughly half the mean of QV."
+  },
+  {
+    "objectID": "posts/pedestrian/pedestrian.html#estimating-billboard-revenue",
+    "href": "posts/pedestrian/pedestrian.html#estimating-billboard-revenue",
+    "title": "How Busy Are Melbourne’s CBD Crossings? A Statistical Deep Dive",
+    "section": "Estimating Billboard Revenue",
+    "text": "Estimating Billboard Revenue\nOne final practical question emerged. If a bank paid a base amount plus a bonus depending on how often a site exceeded 1000 people per hour, which crossing would earn the most?\nI calculated the proportion of days above that threshold using Wilson confidence intervals.\n\n\n\n\nTable 7: Estimated expected revenue and 95% confidence intervals for each crossing using the Wilson score interval.\n\n\n\n\n\n\n\nCrossing\nn\nk\nProportion &gt;1000\nCI (Low)\nCI (High)\nEstimated Revenue\nRevenue CI (Low)\nRevenue CI (High)\n\n\n\n\nSouthern Cross\n97\n31\n0.3\n0.2\n0.4\n11597.9\n11153.0\n12115.3\n\n\nFlinders Street\n97\n22\n0.2\n0.2\n0.3\n11134.0\n10752.5\n11625.9\n\n\nQV Melbourne\n97\n97\n1.0\n1.0\n1.0\n15000.0\n14762.6\n15000.0\n\n\n\n\n\n\n\n\n\nAnd visualised the result.\n\n\n\n\n\n\n\n\nFigure 7: Expected billboard revenue with 95% confidence intervals at each crossing.\n\n\n\n\n\nQV Melbourne once again delivered the highest and most reliable revenue because it exceeded the threshold every single day in the dataset. Flinders Street and Southern Cross showed lower and similar values."
+  },
+  {
+    "objectID": "posts/pedestrian/pedestrian.html#final-thoughts",
+    "href": "posts/pedestrian/pedestrian.html#final-thoughts",
+    "title": "How Busy Are Melbourne’s CBD Crossings? A Statistical Deep Dive",
+    "section": "Final Thoughts",
+    "text": "Final Thoughts\nWhat started as a simple exploration turned into a deeper look at how Melbourne moves. Each crossing behaves differently and those differences matter. They influence engineering decisions, marketing opportunities, and even the reliability of revenue estimates.\nSouthern Cross is steady. Flinders Street is slightly lower but similar in structure. QV Melbourne is on its own path with heavy traffic and large fluctuations that give it both challenges and commercial potential. Data lets us see these places as more than busy intersections. They become systems with measurable behaviour and predictable characteristics. That is what makes this type of analysis rewarding. It connects statistical modelling to real city life.\n\nCode and Reproducibility\n\n\n\n\n\n\nClick to View Full Code and Data\n\n\n\n\n\nFull datasets, scripts, and the original group project are available here:\n\nGroup source code: https://github.com/jyovika/Pedestrian_Crossings_Data_Analysis\n\nMy analytics portfolio repository: https://github.com/jyovika/jyovika-analytics-portfolio"
+  },
+  {
     "objectID": "index.html",
     "href": "index.html",
     "title": "Blogs",
     "section": "",
-    "text": "Do Fast Pit Stops Win F1 Races - or Is It Just Hype?\n\n\n\nR\n\nData Analysis\n\nVisualisation\n\nFormula1\n\n\n\nAn R-powered exploration of Formula 1 performance, lap times, and insights.\n\n\n\n\n\nNov 30, 2025\n\n\n\n\n\nNo matching items"
+    "text": "How Busy Are Melbourne’s CBD Crossings? A Statistical Deep Dive\n\n\n\nR\n\nStatistics\n\nPedestrian counts\n\nMelbourne\n\n\n\nModelling pedestrian flows at Southern Cross, Flinders Street, and QV Melbourne using probability models, bootstrapping, and confidence intervals.\n\n\n\n\n\nDec 2, 2025\n\n\nJyovika Aswale\n\n\n\n\n\n\n\n\n\n\n\n\nDo Fast Pit Stops Win F1 Races - or Is It Just Hype?\n\n\n\nR\n\nData Analysis\n\nVisualisation\n\nFormula1\n\n\n\nAn R-powered exploration of Formula 1 performance, lap times, and insights.\n\n\n\n\n\nNov 30, 2025\n\n\n\n\n\nNo matching items"
   }
 ]

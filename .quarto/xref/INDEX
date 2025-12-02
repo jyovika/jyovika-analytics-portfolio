@@ -16,5 +16,11 @@
   },
   "posts/f1/f1.qmd": {
     "f1.html": "0a5255d3"
+  },
+  "pedestrian.qmd": {
+    "pedestrian.html": "82ca4041"
+  },
+  "posts/pedestrian/pedestrian.qmd": {
+    "pedestrian.html": "5e0c5514"
   }
 }

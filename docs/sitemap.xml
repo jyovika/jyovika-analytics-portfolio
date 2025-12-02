@@ -1,7 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://jyovika.github.io/jyovika-analytics-portfolio/about.html</loc>
+    <lastmod>2025-11-29T14:21:07.197Z</lastmod>
+  </url>
+  <url>
     <loc>https://jyovika.github.io/jyovika-analytics-portfolio/posts/f1/f1.html</loc>
-    <lastmod>2025-11-30T18:36:19.143Z</lastmod>
+    <lastmod>2025-12-02T06:57:28.142Z</lastmod>
+  </url>
+  <url>
+    <loc>https://jyovika.github.io/jyovika-analytics-portfolio/posts/pedestrian/pedestrian.html</loc>
+    <lastmod>2025-12-02T09:41:23.982Z</lastmod>
+  </url>
+  <url>
+    <loc>https://jyovika.github.io/jyovika-analytics-portfolio/index.html</loc>
+    <lastmod>2025-11-30T19:13:42.248Z</lastmod>
   </url>
 </urlset>

@@ -535,8 +535,96 @@ ggplot(tt_table, aes(x = Location, y = Mean, color = Location)) +
 
 ```
 
+QV Melbourne stands out strongly again. It is not only busy but consistently busy. Southern Cross and Flinders Street are steady but sit at roughly half the mean of QV.
 
+## Estimating Billboard Revenue
 
+One final practical question emerged. If a bank paid a base amount plus a bonus depending on how often a site exceeded 1000 people per hour, which crossing would earn the most?
+
+I calculated the proportion of days above that threshold using Wilson confidence intervals.
+```{r}
+#| label: tbl-task5-revenue
+
+THRESH  <- 1000
+BASE    <- 10000
+BONUS   <- 5000
+LEVEL   <- 0.95
+
+# Binomial proportion + Wilson CI
+rev_ci <- pedestrian_long %>%
+  mutate(over_1000 = count > THRESH) %>%
+  group_by(crossing) %>%
+  summarise(
+    n = n(),
+    k = sum(over_1000),
+    .groups = "drop") %>%
+  rowwise() %>%
+  mutate(
+    pt   = list(prop.test(k, n, conf.level = LEVEL, correct = TRUE)),
+    phat = pt$estimate[[1]],
+    lo_p = pt$conf.int[1],
+    hi_p = pt$conf.int[2],
+    rev_hat = BASE + BONUS * phat,
+    rev_lo  = BASE + BONUS * lo_p,
+    rev_hi  = BASE + BONUS * hi_p) %>%
+  ungroup() 
+
+rev_ci <- rev_ci[, c("crossing","n", "k", "phat", "lo_p", "hi_p", "rev_hat", "rev_lo", "rev_hi")]
+
+rev_ci %>%
+  kable(
+    caption = "Estimated expected revenue and 95% confidence intervals for each crossing using the Wilson score interval.",
+    col.names = c("Crossing", "n", "k", "Proportion >1000", "CI (Low)", "CI (High)", "Estimated Revenue", "Revenue CI (Low)", "Revenue CI (High)"),
+    digits = 1,
+    align = rep("c", ncol(.))) %>%
+  kable_styling(
+    bootstrap_options = c("striped", "hover", "condensed", "responsive"),
+    full_width = FALSE,
+    position = "center") %>%
+  row_spec(0, bold = TRUE, color = "#FFFFFF", background = "#598392") %>%
+  column_spec(1, bold = TRUE, color = "#004D40")
+```
+
+And visualised the result.
+
+```{r, echo=FALSE}
+#| label: fig-task5-revenue
+#| fig-cap: "Expected billboard revenue with 95% confidence intervals at each crossing."
+
+ggplot(rev_ci, aes(x = reorder(crossing, rev_hat), y = rev_hat)) +
+  geom_col(aes(fill = crossing), width = 0.6) +
+  geom_errorbar(aes(ymin = rev_lo, ymax = rev_hi), width = 0.2) +
+  geom_text(aes(label = dollar(rev_hat, accuracy = 1)),
+            vjust = -0.5, size = 3.5) +
+  scale_fill_manual(values = cross_cols) +
+  scale_y_continuous(
+    labels = label_dollar(prefix = "$", accuracy = 1),
+    expand = expansion(mult = c(0, 0.08))) +
+  coord_flip() +
+  labs(
+    title = "Expected Revenue under Bank Offer",
+    x = NULL, y = "Expected revenue") +
+  theme_minimal(base_size = 12) +
+  theme(legend.position = "none")
+```
+
+QV Melbourne once again delivered the highest and most reliable revenue because it exceeded the threshold every single day in the dataset. Flinders Street and Southern Cross showed lower and similar values.
+
+## Final Thoughts
+
+What started as a simple exploration turned into a deeper look at how Melbourne moves. Each crossing behaves differently and those differences matter. They influence engineering decisions, marketing opportunities, and even the reliability of revenue estimates.
+
+Southern Cross is steady. Flinders Street is slightly lower but similar in structure. QV Melbourne is on its own path with heavy traffic and large fluctuations that give it both challenges and commercial potential.
+Data lets us see these places as more than busy intersections. They become systems with measurable behaviour and predictable characteristics. That is what makes this type of analysis rewarding. It connects statistical modelling to real city life.
+
+###  Code and Reproducibility
+
+::: {.callout-tip collapse="true" title="Click to View Full Code and Data"}
+Full datasets, scripts, and the original group project are available here:
+
+- Group source code: https://github.com/USERNAME/ORIGINAL-REPO  
+- My analytics portfolio repository: https://github.com/USERNAME/PORTFOLIO-REPO
+:::
 
 
 

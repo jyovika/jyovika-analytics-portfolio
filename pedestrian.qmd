@@ -22,5 +22,130 @@ You can find the original group repository here:
 👉 **Original Assignment GitHub Repo:** <https://github.com/jyovika/Pedestrian_Crossings_Data_Analysis> 
 :::
 
+## Introduction 
+
+The centre of Melbourne is full of movement and energy. Every day thousands of people pass through places like Southern Cross, Flinders Street, and QV Melbourne. At first glance it feels chaotic. Underneath that movement however is a pattern. I wanted to understand those patterns and tell a story about how these three locations behave.
+
+I approached this like a real analytics problem. Start with descriptive exploration. Fit distributions that reflect the character of each location. Estimate meaningful quantities for planning and design. Compare sites in a way that answers the practical questions that planners and marketers actually care about.
+By the end of the analysis, these three crossings no longer felt like random busy spots on a map. They felt like distinct personalities with their own rhythms and their own commercial and operational implications.
+
+```{r, setup, echo=FALSE}
+#| label: setup
+#| include: false
+#| message: false
+#| warning: false
+knitr::opts_chunk$set(
+fig.align = "center",
+fig.width = 8,
+fig.height = 5,
+dpi = 150,
+echo = TRUE,
+warning = FALSE,
+message = FALSE
+)
+
+library(boot)
+library(MASS)
+library(tidyverse)
+library(knitr)
+library(kableExtra)
+library(broom)
+library(purrr)
+library(scales)
+
+set.seed(355435)
+
+cross_cols <- c(
+"Flinders Street" = "#766153",
+"QV Melbourne" = "#718f94",
+"Southern Cross"  = "#717744")
+
+```
+
+```{r,cleaning-and-loading-data, echo=FALSE}
+pedestrian_df <- read.csv(here::here("data/pedestrian/pedestrians.csv"))
+
+pedestrian_long <- pedestrian_df %>%
+  mutate(obs = row_number()) %>%
+  pivot_longer(-obs, names_to = "crossing", values_to = "count") %>%
+  mutate(crossing = recode(crossing,
+                           "flinders_street" = "Flinders Street",
+                           "qv_melbourne"    = "QV Melbourne",
+                           "southern_cross"  = "Southern Cross")) %>%
+  mutate(crossing = factor(
+    crossing,
+    levels = c("Southern Cross", "Flinders Street", "QV Melbourne")))
+```
+
+## First Impressions Through Visuals
+
+To get a feel for how each location behaves, I plotted boxplots and density curves. These gave a surprisingly clear first impression.
+
+::: columns
+::: {.column width="50%"}
+
+```{r, echo=FALSE}
+#| label: fig-boxplot
+#| fig-cap: "Pedestrian counts by crossing."
+ggplot(pedestrian_long, aes(x = crossing, y = count, fill = crossing)) +
+  geom_boxplot(outlier.shape = NA, alpha = 0.8) +
+  scale_fill_manual(values = cross_cols) +
+  labs(x = NULL, y = "Count per interval") +
+  theme_minimal() +
+  theme(legend.position = "none")
+
+```
+
+:::
+::: {.column width="50%"}
+
+```{r, echo=FALSE}
+#| label: fig-density
+#| fig-cap: "Distribution of pedestrian counts by crossing."
+ggplot(pedestrian_long, aes(x = count, fill = crossing)) +
+  geom_density(alpha = 0.35) +
+  facet_wrap(~ crossing, scales = "fixed") +
+  scale_fill_manual(values = cross_cols) +
+  labs(x = "Count", y = "Density") +
+  theme_minimal() +
+  theme(legend.position = "none")
+```
+
+:::
+:::
+
+QV Melbourne clearly carries the heaviest flow. Southern Cross and Flinders Street sit closer together although Flinders has slightly lower typical values. All three distributions show right skew which tells us they have occasional high traffic bursts.
+
+The summary statistics confirm these observations.
+```{r, echo=FALSE}
+#| label: tbl-crossing-summary
+pedestrian_long %>%
+  group_by(crossing) %>%
+  summarise(
+    n      = n(),
+    mean   = mean(count),
+    median = median(count),
+    sd     = sd(count),
+    min    = min(count),
+    max    = max(count),
+    iqr    = IQR(count),
+    .groups = "drop"
+  ) %>%
+  kable(
+    digits = 1,
+    col.names = c("Crossing", "n", "Mean", "Median", "SD", "Min", "Max", "IQR")
+  ) %>%
+  kable_styling(
+    bootstrap_options = c("striped", "hover", "condensed", "responsive"),
+    full_width = FALSE
+  ) %>%
+  row_spec(0, bold = TRUE, color = "#FFFFFF", background = "#598392") %>%
+  column_spec(1, bold = TRUE, color = "#004D40")
+```
+
+At this stage it already felt like QV Melbourne was in a different league. It is not just busy. It is volatile. That volatility becomes important once we start modelling.
+
+
+
 
 

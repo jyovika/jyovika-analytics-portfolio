@@ -449,6 +449,38 @@ qqline(scale(d),
 
 Then illustrated the estimate and confidence interval.
 
+```{r, echo=FALSE}
+#| label: fig-ci
+#| fig-cap: "95% confidence interval for the mean difference between Southern Cross and Flinders Street. Shaded area shows +-80 people/hour design tolerance."
+
+ci <- tibble(
+  estimate = tt$estimate,
+  lower = tt$conf.int[1],
+  upper = tt$conf.int[2])
+
+ggplot(ci) +
+  geom_rect(aes(xmin = -Inf, xmax = Inf, ymin = -80, ymax = 80),
+            fill = "#b5cda3", alpha = 0.2) +
+  geom_errorbar(aes(x = 1, ymin = lower, ymax = upper),
+                width = 0.08, linewidth = 1,
+                colour = "#3a405a") +
+  geom_point(aes(x = 1, y = estimate),
+             size = 3, colour = "#124559") +
+  geom_hline(yintercept = 0, linetype = "dashed", colour = "#444444") +
+  coord_cartesian(ylim = c(-120, 120)) +
+  scale_x_continuous(limits = c(0.5, 1.5), breaks = NULL) +
+  labs(
+    title = "95% CI for Mean Difference: Southern Cross-Flinders",
+    subtitle = "Shaded zone = +-80 people/hour (design tolerance)",
+    y = "Difference in mean counts (SC-FL)",
+    x = NULL) +
+  theme_minimal(base_size = 13)
+
+```
+
+The confidence interval stayed below 80. This means the two locations are similar enough to share the same physical design. It is a simple result but it has real engineering implications and potential cost savings.
+
+
 
 
 

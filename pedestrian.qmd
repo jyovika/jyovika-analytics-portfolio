@@ -227,6 +227,7 @@ mle_fits <- bind_rows(sc_models, fl_models, qv_models) %>%
 mle_fits  %>%
   kable(
     caption = "Maximum-likelihood estimates for Normal, Lognormal and Gamma models across the three crossings.",
+    col.names = c("Crossing", "Model", "Log-Likelihood", "AIC", "Mean Estimate", "SD Estimate"),
     digits = 1,
     align = rep("c")) %>%
   kable_styling(
@@ -287,6 +288,8 @@ abline(0, 1, lty = 2)
 ```
 
 The results made sense intuitively. Southern Cross behaves in a more symmetric way so the Normal model works there. Flinders Street and QV Melbourne are right skewed so the Lognormal model captures their structure better. These choices become important later once we start estimating upper percentiles and running simulations.
+
+
 
 
 

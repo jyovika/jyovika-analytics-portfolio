@@ -480,6 +480,62 @@ ggplot(ci) +
 
 The confidence interval stayed below 80. This means the two locations are similar enough to share the same physical design. It is a simple result but it has real engineering implications and potential cost savings.
 
+## Which Location Offers the Best Marketing Opportunity?
+Pedestrian flow directly relates to advertising value. To compare locations fairly, I estimated the mean counts and their confidence intervals.
+
+```{r, results='hide', task4_tt, echo=FALSE}
+# Southern Cross
+tt_sc <- t.test(pedestrian_df$southern_cross, conf.level = 0.95)
+
+# Flinders Street
+tt_fl <- t.test(pedestrian_df$flinders_street, conf.level = 0.95)
+
+# QV
+tt_qv <- t.test(pedestrian_df$qv, conf.level = 0.95)
+```
+
+```{r}
+#| label: tbl-task4-ttest
+
+tt_table <- tibble(
+  Location = c("Southern Cross", "Flinders Street", "QV Melbourne"),
+  Mean     = c(tt_sc$estimate, tt_fl$estimate, tt_qv$estimate),
+  `95% CI (Low)`  = c(tt_sc$conf.int[1], tt_fl$conf.int[1], tt_qv$conf.int[1]),
+  `95% CI (High)` = c(tt_sc$conf.int[2], tt_fl$conf.int[2], tt_qv$conf.int[2]))
+
+tt_table %>%
+  kable(
+    caption = "Mean pedestrian counts and 95% confidence intervals for each crossing (one-sample t-tests)",
+    digits = 1,
+    align = rep("c", ncol(.))) %>%
+  kable_styling(
+    bootstrap_options = c("striped", "hover", "condensed", "responsive"),
+    full_width = FALSE,
+    position = "center") %>%
+  row_spec(0, bold = TRUE, color = "#FFFFFF", background = "#598392") %>%
+  column_spec(1, bold = TRUE, color = "#004D40")
+```
+
+A lollipop chart showed the contrasts clearly.
+
+```{r, echo=FALSE}
+#| label: fig-task4-traffic
+
+ggplot(tt_table, aes(x = Location, y = Mean, color = Location)) +
+  geom_point(size = 4) +
+  geom_errorbar(aes(ymin = `95% CI (Low)`, ymax = `95% CI (High)`), width = 0.15, linewidth = 1) +
+  geom_segment(aes(xend = Location, y = 0, yend = Mean), color = "grey80") +
+  scale_color_manual(values = cross_cols) +
+  labs(
+    title = "Pedestrian Traffic with 95% Confidence Intervals",
+    y = "Mean pedestrians per hour",
+    x = "Location") +
+  theme_minimal(base_size = 14) +
+  theme(legend.position = "none")
+
+```
+
+
 
 
 

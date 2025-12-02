@@ -393,4 +393,62 @@ final_tbl %>%
 
 The interesting part is that both approaches lined up almost perfectly. That gave confidence that the models were capturing the behaviour well. QV Melbourne showed a very high threshold, well above 2600. Southern Cross and Flinders Street sat around the 900 to 1000 mark.
 
+## Are Two Crossings Similar Enough for a Shared Design?
+At one stage the engineering question was straightforward. If Southern Cross and Flinders Street differed by more than 80 people per hour on average, they would need separate designs.
+
+A paired t test gave a clear answer.
+
+```{r, echo=FALSE}
+#| label: tbl-t-test
+
+df  <- na.omit(pedestrian_df[, c("southern_cross","flinders_street")])
+sc  <- df$southern_cross
+fl  <- df$flinders_street
+d   <- sc - fl                 
+
+tt <- t.test(sc, fl, paired = TRUE, conf.level = 0.95)
+paired_tt_tbl <- tibble(
+  Comparison = "Southern Cross − Flinders Street",
+  Mean_Diff  = tt$estimate,
+  `95% CI (Low)` = tt$conf.int[1],
+  `95% CI (High)` = tt$conf.int[2],
+  t_value = tt$statistic,
+  df = tt$parameter,
+  p_value = tt$p.value)
+
+paired_tt_tbl %>%
+  kable(
+    caption = "Paired t-test results comparing Southern Cross and Flinders Street (95% confidence interval for mean difference).",
+    digits = 2,
+    align = rep("c", ncol(.))) %>%
+  kable_styling(
+    bootstrap_options = c("striped", "hover", "condensed", "responsive"),
+    full_width = FALSE,
+    position = "center") %>%
+  row_spec(0, bold = TRUE, color = "#FFFFFF", background = "#598392") %>%
+  column_spec(1, bold = TRUE, color = "#004D40")
+
+```
+
+I checked the normality of differences.
+
+```{r, echo=FALSE}
+#| label: fig-qq-differences
+#| fig-cap: "QQ plot of paired differences (Southern Cross - Flinders Street) showing approximate normality."
+
+qqnorm(scale(d),
+       main = "QQ of differences: Southern Cross − Flinders",
+       pch  = 16,
+       col  = adjustcolor("#3a405a", alpha.f = 0.5))
+
+qqline(scale(d),
+       col  = "#598392",
+       lwd  = 2,
+       lty  = 2)
+```
+
+Then illustrated the estimate and confidence interval.
+
+
+
 

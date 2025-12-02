@@ -3,11 +3,12 @@ title: "How Busy Are Melbourne’s CBD Crossings? A Statistical Deep Dive"
 description: "Modelling pedestrian flows at Southern Cross, Flinders Street, and QV Melbourne using probability models, bootstrapping, and confidence intervals."
 author: "Jyovika Aswale"
 date: 2 December 2025
+image: "train-banner.jpg"
+title-block-banner: "train-banner.jpg"
 categories: [R, Statistics, Pedestrian counts, Melbourne]
 format:
   html:
     toc: true
-    toc-location: left
     code-summary: "Show code"
     df-print: default
 ---

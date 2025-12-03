@@ -1,0 +1,161 @@
+---
+title: "food"
+editor: visual
+---
+
+```{r, message=FALSE}
+library(tidyverse)
+library(conflicted)
+
+conflicts_prefer(dplyr::filter)
+conflicts_prefer(dplyr::select)
+conflicts_prefer(dplyr::slice)
+knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
+
+
+```
+
+```{r, message=FALSE, warning=FALSE}
+food <- read_csv(here::here("data/food_nutrition/food.csv"))
+food_nutrient <- read_csv(here::here("data/food_nutrition/food_nutrient.csv"))
+nutrient <- read_csv(here::here("data/food_nutrition/nutrient.csv"))
+food_categoryc<- read_csv(here::here("data/food_nutrition/food_category.csv"))
+food_portion <- read_csv(here::here("data/food_nutrition/food_portion.csv"))
+measure_unit <- read_csv(here::here("data/food_nutrition/measure_unit.csv"))
+branded_food <- read_csv(here::here("data/food_nutrition/branded_food.csv"))
+nutrient_source <- read_csv(here::here("data/food_nutrition/food_nutrient_source.csv"))
+nutrient_deriv <- read_csv(here::here("data/food_nutrition/food_nutrient_derivation.csv"))
+calorie_factor <- read_csv(here::here("data/food_nutrition/food_calorie_conversion_factor.csv"))
+retention_factor <- read_csv(here::here("data/food_nutrition/retention_factor.csv"))
+foundation_food <- read_csv(here::here("data/food_nutrition/foundation_food.csv"))
+sr_legacy_food <- read_csv(here::here("data/food_nutrition/sr_legacy_food.csv"))
+lab_method <- read_csv(here::here("data/food_nutrition/lab_method.csv"))
+```
+
+```{r, data-processing}
+# Load and clean up the food category table
+food_category <- food_categoryc %>%
+  mutate(id = as.character(id)) %>%    
+  rename(food_category_description = description)
+
+# Macro nutrient IDs we care about
+macro_ids <- c(
+  energy  = 1008,
+  protein = 1003,
+  carbs   = 1005,
+  fat     = 1004)
+
+# Pull only macro nutrients from nutrient table
+macro_nutrients <- nutrient %>%
+  filter(id %in% macro_ids) %>% 
+  transmute(
+    nutrient_id   = id,
+    nutrient_name = name,
+    unit_name)
+
+# Join food with category and branded info
+food_full <- food %>%
+  left_join(food_category, by = c("food_category_id" = "id")) %>% 
+  left_join(branded_food, by = "fdc_id")  
+
+# Join portion table with measure units
+portion_full <- food_portion %>%
+  left_join(measure_unit, by = c("measure_unit_id" = "id")) %>% 
+  rename(portion_unit = name)
+
+# Pick a default portion for each food (smallest seq_num)
+portion_default <- portion_full %>%
+  group_by(fdc_id) %>%
+  slice_min(seq_num, n = 1, with_ties = FALSE) %>%
+  ungroup()
+
+# Get only macro nutrients per food and attach labels + portions
+food_macros_long <- food_nutrient %>%
+  filter(nutrient_id %in% macro_ids) %>%         
+  left_join(macro_nutrients, by = "nutrient_id") %>%
+  left_join(food_full,       by = "fdc_id") %>%
+  left_join(portion_default, by = "fdc_id")
+
+# Clean nutrient names so they pivot nicely later
+food_macros_long <- food_macros_long %>%
+  mutate(
+    nutrient_short = case_when(
+      nutrient_name == "Energy" ~ "kcal",
+      nutrient_name == "Protein" ~ "protein_g",
+      nutrient_name == "Carbohydrate, by difference" ~ "carb_g",
+      nutrient_name == "Total lipid (fat)" ~ "fat_g",
+      TRUE ~ nutrient_name))
+
+# Aggregate macro values across foods + their default portion info
+food_macros_agg <- food_macros_long %>%
+  group_by(
+    fdc_id,
+    food_name                  = description,
+    data_type,
+    food_category_code         = code,
+    food_category              = food_category_description,
+    brand_owner,
+    brand_name,
+    serving_size,
+    serving_size_unit,
+    household_serving_fulltext,
+    default_portion_descr      = portion_description,
+    default_portion_grams      = gram_weight,
+    portion_unit,
+    nutrient_short
+    ) %>%
+  summarise(
+    amount = mean(amount.x, na.rm = TRUE),  
+    .groups = "drop")
+
+# Convert long 
+nutrition_master_macros <- food_macros_agg %>%
+  tidyr::pivot_wider(
+    names_from  = nutrient_short,
+    values_from = amount)
+
+nutrition_master_macros <- nutrition_master_macros %>%
+  # keep only foods that have macros AND a portion gram weight
+  filter(
+    !is.na(kcal),
+    !is.na(protein_g),
+    !is.na(carb_g),
+    !is.na(fat_g),
+    !is.na(default_portion_grams),
+    default_portion_grams > 0
+  ) %>%
+  mutate(
+    kcal_per_portion  = kcal * default_portion_grams / 100,
+    protein_g_per_portion = protein_g * default_portion_grams / 100,
+    carb_g_per_portion  = carb_g * default_portion_grams / 100,
+    fat_g_per_portion = fat_g * default_portion_grams / 100
+  ) %>%
+  select(
+    fdc_id,
+    food_name,
+    data_type,
+    food_category,
+    brand_owner,
+    brand_name,
+    default_portion_descr,
+    default_portion_grams,
+    portion_unit,
+    kcal_per_portion,
+    protein_g_per_portion,
+    carb_g_per_portion,
+    fat_g_per_portion)
+
+```
+
+```{r, cleanup, message=FALSE, warning=FALSE}
+rm(
+  food, food_nutrient, nutrient, food_categoryc, food_category,
+  food_portion, measure_unit, branded_food,
+  nutrient_source, nutrient_deriv, calorie_factor,
+  retention_factor, foundation_food, sr_legacy_food, lab_method,
+  macro_nutrients, macro_ids, food_full, portion_full,
+  portion_default, food_macros_long, food_macros_agg)
+
+gc() 
+
+```

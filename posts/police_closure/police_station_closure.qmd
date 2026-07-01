@@ -1,8 +1,24 @@
 ---
-title: "police_closure"
+title: "Did Closing Police Station Counters Increase Crime in Victoria?"
+description: "A difference-in-differences analysis of Victoria Police's 2023-24 reception hour reductions across 34 LGAs"
 author: "Jyovika Aswale"
+categories: [R, causal inference, public policy, Victoria]
 editor: visual
 ---
+
+## Background
+
+In late 2023, Victoria Police reduced public reception counter hours at 43 stations across the state, framing the move as a way to free up officers for street patrols. The policy rolled out in two main phases: 23 stations from November 2023, and a further 20 from early 2024.
+
+The stated logic was simple: fewer officers staffing front counters means more officers on the street, which should deter crime. But does the data support that?
+
+This is a live policy debate. In June 2026, a Herald Sun investigation alleged that crime rose 22% in areas with reduced station hours, compared to 15.7% statewide. The investigation also found that Victoria Police had initially cited flawed calculations to defend the policy. I wanted to test the claim properly using a causal inference framework rather than a simple before-and-after comparison.
+
+## Data
+
+All crime data comes from the [Crime Statistics Agency Victoria](https://www.crimestatistics.vic.gov.au/crime-statistics/latest-victorian-crime-data/download-data), an independent body that publishes recorded criminal incidents by local government area (LGA) annually (year ending March). The dataset covers 80 Victorian LGAs from 2017 to 2026.
+
+The station closure list was compiled from Victoria Police's own November 2023 public announcement, which named all 43 affected stations and their revised hours. Each station was mapped to its LGA to build a treatment group of 34 LGAs.
 
 ```{r, libraries, message=FALSE}
 library(tidyverse)

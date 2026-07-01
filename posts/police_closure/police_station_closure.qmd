@@ -52,7 +52,7 @@ offences_clean <- offences_raw %>%
     police_service_area != "Justice Institutions and Immigration Facilities")
 
 ```
- 
+
 ```{r, build-panel}
 treatment <- closures %>%
   group_by(lga_csa_name) %>%
@@ -68,8 +68,31 @@ panel <- incidents_clean %>%
     did     = treated * post)
 ```
 
+```{r, did-regression}
+did_model <- feols(
+  incidents_recorded ~ did | lga + year,
+  data = panel,
+  cluster = ~lga)
 
+summary(did_model)
+```
 
-
- 
+```{r,parallel-trends}
+panel %>%
+  group_by(year, treated) %>%
+  summarise(avg_incidents = mean(incidents_recorded), .groups = "drop") %>%
+  group_by(treated) %>%
+  mutate(indexed = avg_incidents / avg_incidents[year == 2017] * 100) %>%
+  mutate(group = if_else(treated == 1, "Treatment", "Control")) %>%
+  ggplot(aes(x = year, y = indexed, colour = group)) +
+  geom_line(linewidth = 1) +
+  geom_vline(xintercept = 2024, linetype = "dashed", colour = "grey40") +
+  labs(
+    title = "Indexed criminal incidents (2017 = 100): treatment vs control LGAs",
+    subtitle = "Dashed line = reception hour reductions begin (CSA year 2024)",
+    x = "Year (ending March)",
+    y = "Index (2017 = 100)",
+    colour = NULL) +
+  theme_minimal()
+```
 

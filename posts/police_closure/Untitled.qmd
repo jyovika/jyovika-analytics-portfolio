@@ -1,0 +1,53 @@
+---
+title: "police_closure"
+author: "Jyovika Aswale"
+editor: visual
+---
+
+```{r, libraries, message=FALSE}
+library(tidyverse)
+library(readxl)
+```
+
+```{r, message=FALSE, results='hide', warning=FALSE}
+incidents_path <- here::here("data", "Police_station_closure", "Data_Tables_LGA_Criminal_Incidents_Year_Ending_March_2026_0.xlsx")
+offences_path  <- here::here("data", "Police_station_closure", "Data_Tables_LGA_Recorded_Offences_Year_Ending_March_2026_0.xlsx")
+
+excel_sheets(incidents_path)
+excel_sheets(offences_path)
+
+read_excel(incidents_path, sheet = 1, n_max = 10, col_names = FALSE)
+
+incidents_raw <- read_excel(incidents_path, sheet = "Table 01", skip = 1)
+offences_raw  <- read_excel(offences_path, sheet = "Table 01", skip = 1)
+```
+
+```{r}
+exclude_lgas <- c("Total", "Victoria", "Unincorporated Vic")
+
+incidents_clean <- incidents_raw %>%
+  rename(
+    year                = 1,
+    month               = 2,
+    police_service_area = 3,
+    lga                 = 4,
+    incidents_recorded  = 5,
+    rate_per_100k       = 6) %>%
+  filter(!lga %in% exclude_lgas)
+
+offences_clean <- offences_raw %>%
+  rename(
+    year                = 1,
+    month               = 2,
+    police_service_area = 3,
+    lga                 = 4,
+    offence_count       = 5,
+    rate_per_100k       = 6) %>%
+  filter(
+    !lga %in% exclude_lgas,
+    police_service_area != "Justice Institutions and Immigration Facilities")
+
+```
+ 
+ 
+

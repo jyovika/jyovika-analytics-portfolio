@@ -42,7 +42,7 @@ closures <- read_csv(here::here("data", "Police_station_closure", "station_closu
   select(-treatment_month)
 ```
 
-```{r, cleaning}
+```{r, cleaning, include=FALSE}
 exclude_lgas <- c("Total", "Victoria", "Unincorporated Vic")
 
 incidents_clean <- incidents_raw %>%
@@ -69,7 +69,7 @@ offences_clean <- offences_raw %>%
 
 ```
 
-```{r, build-panel}
+```{r, build-panel, include=FALSE}
 treatment <- closures %>%
   group_by(lga_csa_name) %>%
   slice_min(treatment_year_csa) %>%
@@ -84,6 +84,12 @@ panel <- incidents_clean %>%
     did     = treated * post)
 ```
 
+## Method
+
+I used a difference-in-differences (DiD) design, which compares the change in crime in treated LGAs (those with reduced hours) against the change in control LGAs (those that kept full hours), over the same period. This controls for statewide trends such as cost-of-living pressures and post-COVID crime recovery, which would have affected all LGAs regardless of the policy.
+
+The model includes LGA fixed effects (controlling for permanent differences between areas) and year fixed effects (controlling for statewide shocks), with standard errors clustered by LGA.
+
 ```{r, did-regression}
 did_model <- feols(
   incidents_recorded ~ did | lga + year,
@@ -92,6 +98,10 @@ did_model <- feols(
 
 summary(did_model)
 ```
+
+## Checking the Key Assumption
+
+The critical assumption in DiD is parallel trends: that treated and control LGAs were following the same crime trajectory before the policy. Indexing both groups to 2017 = 100 makes this easy to assess visually.
 
 ```{r,parallel-trends}
 panel %>%
@@ -111,4 +121,12 @@ panel %>%
     colour = NULL) +
   theme_minimal()
 ```
+
+The lines track almost identically from 2017 to 2024, including the same COVID-era dip in 2020-2022 and the same recovery pattern. This strongly supports the parallel trends assumption and gives confidence in the DiD estimate.
+
+## Results
+
+After accounting for LGA and year fixed effects, treated LGAs experienced approximately **777 more criminal incidents per year** than would have been expected had they followed the control group trend. The result is statistically significant at the 1% level (p = 0.004).
+
+This is consistent with the Herald Sun's finding, and contradicts Victoria Police's framing that the reductions had no adverse impact on community safety.
 

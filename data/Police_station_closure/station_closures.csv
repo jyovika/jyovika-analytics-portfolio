@@ -1,0 +1,47 @@
+station,lga,lga_csa_name,phase,treatment_month,treatment_year_csa,reduction_type
+Wyndham North,Wyndham,Wyndham,1,2023-11,2024,8hr reception
+Avondale Heights,Moonee Valley,Moonee Valley,1,2023-11,2024,8hr reception
+South Melbourne,Melbourne,Melbourne,1,2023-11,2024,16hr reception
+Malvern,Stonnington,Stonnington,1,2023-11,2024,8hr reception
+Bayside,Bayside,Bayside,1,2023-11,2024,16hr reception
+Chelsea,Kingston,Kingston,1,2023-11,2024,8hr reception
+Cheltenham,Kingston,Kingston,1,2023-11,2024,8hr reception
+Mordialloc,Kingston,Kingston,1,2023-11,2024,16hr reception
+Endeavour Hills,Casey,Casey,1,2023-11,2024,8hr reception
+Springvale,Greater Dandenong,Greater Dandenong,1,2023-11,2024,16hr reception
+Carrum Downs,Frankston,Frankston,1,2023-11,2024,8hr reception
+Hastings,Mornington Peninsula,Mornington Peninsula,1,2023-11,2024,16hr reception
+Mornington,Mornington Peninsula,Mornington Peninsula,1,2023-11,2024,16hr reception
+Camberwell,Boroondara,Boroondara,1,2023-11,2024,16hr reception
+Clayton,Monash,Monash,1,2023-11,2024,no reception
+Mount Waverley,Monash,Monash,1,2023-11,2024,no reception
+Forest Hill,Whitehorse,Whitehorse,1,2023-11,2024,16hr reception
+Lakes Entrance,East Gippsland,East Gippsland,1,2023-11,2024,8hr reception
+Colac,Colac-Otway,Colac-Otway,1,2023-11,2024,16hr reception
+Hamilton,Southern Grampians,Southern Grampians,1,2023-11,2024,16hr reception
+Portland,Glenelg,Glenelg,1,2023-11,2024,16hr reception
+Bacchus Marsh,Moorabool,Moorabool,1,2023-11,2024,16hr reception
+Stawell,Northern Grampians,Northern Grampians,1,2023-11,2024,16hr reception
+Southbank,Melbourne,Melbourne,2,2024-01,2024,8hr reception
+Collingwood,Yarra,Yarra,2,2024-01,2024,8hr reception
+Fitzroy,Yarra,Yarra,2,2024-01,2024,8hr reception
+Williamstown,Hobsons Bay,Hobsons Bay,2,2024-01,2024,8hr reception
+Keilor Downs,Brimbank,Brimbank,2,2024-01,2024,8hr reception
+Sunbury,Hume,Hume,2,2024-01,2024,16hr reception
+Flemington,Melbourne,Melbourne,2,2024-01,2024,8hr reception
+Brunswick,Merri-bek,Merri-bek,2,2024-01,2024,16hr reception
+Greensborough,Banyule,Banyule,2,2024-01,2024,8hr reception
+Northcote,Darebin,Darebin,2,2024-01,2024,8hr reception
+Reservoir,Darebin,Darebin,2,2024-01,2024,8hr reception
+Eltham,Nillumbik,Nillumbik,2,2024-01,2024,8hr reception
+Epping,Whittlesea,Whittlesea,2,2024-01,2024,8hr reception
+Oakleigh,Monash,Monash,2,2024-01,2024,16hr reception
+Boronia,Knox,Knox,2,2024-01,2024,16hr reception
+Moe,Latrobe,Latrobe,2,2024-01,2024,16hr reception
+Ararat,Ararat,Ararat,2,2024-01,2024,16hr reception
+Castlemaine,Mount Alexander,Mount Alexander,2,2024-01,2024,16hr reception
+Maryborough,Central Goldfields,Central Goldfields,2,2024-01,2024,16hr reception
+Kyneton,Macedon Ranges,Macedon Ranges,2,2024-01,2024,16hr reception
+Mernda,Whittlesea,Whittlesea,3,2024-05,2025,8hr reception (2 days/week)
+Mill Park,Whittlesea,Whittlesea,3,2024-05,2025,8hr reception
+Whittlesea,Whittlesea,Whittlesea,3,2024-05,2025,appointment only

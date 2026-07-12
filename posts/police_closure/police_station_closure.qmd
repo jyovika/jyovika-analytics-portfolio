@@ -20,18 +20,18 @@ All crime data comes from the [Crime Statistics Agency Victoria](https://www.cri
 
 The station closure list was compiled from Victoria Police's own November 2023 public announcement, which named all 43 affected stations and their revised hours. Each station was mapped to its LGA to build a treatment group of 34 LGAs.
 
-```{r, libraries, message=FALSE}
+```{r, libraries, message=FALSE, echo=FALSE}
 library(tidyverse)
 library(readxl)
 library(fixest)
+library(kableExtra)
+library(knitr)
+library(broom)
 ```
 
-```{r,load-data, message=FALSE, results='hide', warning=FALSE}
+```{r,load-data, message=FALSE, results='hide', warning=FALSE, echo=FALSE}
 incidents_path <- here::here("data", "Police_station_closure", "Data_Tables_LGA_Criminal_Incidents_Year_Ending_March_2026_0.xlsx")
 offences_path  <- here::here("data", "Police_station_closure", "Data_Tables_LGA_Recorded_Offences_Year_Ending_March_2026_0.xlsx")
-
-excel_sheets(incidents_path)
-excel_sheets(offences_path)
 
 read_excel(incidents_path, sheet = 1, n_max = 10, col_names = FALSE)
 
@@ -42,7 +42,7 @@ closures <- read_csv(here::here("data", "Police_station_closure", "station_closu
   select(-treatment_month)
 ```
 
-```{r, cleaning, include=FALSE}
+```{r, cleaning, include=FALSE, echo=FALSE}
 exclude_lgas <- c("Total", "Victoria", "Unincorporated Vic")
 
 incidents_clean <- incidents_raw %>%
@@ -69,7 +69,7 @@ offences_clean <- offences_raw %>%
 
 ```
 
-```{r, build-panel, include=FALSE}
+```{r, build-panel, include=FALSE, echo=FALSE}
 treatment <- closures %>%
   group_by(lga_csa_name) %>%
   slice_min(treatment_year_csa) %>%
@@ -90,20 +90,32 @@ I used a difference-in-differences (DiD) design, which compares the change in cr
 
 The model includes LGA fixed effects (controlling for permanent differences between areas) and year fixed effects (controlling for statewide shocks), with standard errors clustered by LGA.
 
-```{r, did-regression}
+```{r, did-regression, echo=FALSE}
 did_model <- feols(
   incidents_recorded ~ did | lga + year,
   data = panel,
   cluster = ~lga)
 
-summary(did_model)
+tidy(did_model, conf.int = TRUE, conf.level = 0.95) %>%
+  select(estimate, conf.low, conf.high) %>%
+  kable(
+    caption = "Bootstrap estimate for pit time effect with 95 percent interval",
+    col.names = c("Mean Estimate", "Lower 95%", "Upper 95%"),
+    digits = 5,
+    align = c("c", "c", "c")) %>%
+  kable_styling(
+    bootstrap_options = c("condensed", "striped"),
+    full_width = FALSE,
+    position = "center",
+    font_size = 14) %>%
+  row_spec(0, bold = TRUE, color = "white", background = "#4F6D7A")
 ```
 
 ## Checking the Key Assumption
 
 The critical assumption in DiD is parallel trends: that treated and control LGAs were following the same crime trajectory before the policy. Indexing both groups to 2017 = 100 makes this easy to assess visually.
 
-```{r,parallel-trends}
+```{r,parallel-trends, echo=FALSE}
 panel %>%
   group_by(year, treated) %>%
   summarise(avg_incidents = mean(incidents_recorded), .groups = "drop") %>%

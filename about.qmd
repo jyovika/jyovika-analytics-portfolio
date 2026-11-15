@@ -1,27 +1,50 @@
 ---
 title: "Jyovika Aswale"
-image: profile.jpg          
+image: profile.jpg
 about:
-  template: trestles   
+  template: trestles
   image-shape: round
   links:
     - icon: github
       text: "GitHub"
-      href: https://github.com/jyovika   
+      href: https://github.com/jyovika
     - icon: linkedin
       text: "LinkedIn"
       href: https://www.linkedin.com/in/jyovika-aswale-994344299/
     - icon: envelope
       text: "Email"
-      href: mailto:jasw0002@monash.student.edu
+      href: mailto:jyo.aswale@gmail.com
 
 ---
 
 ## About Me
 
-I am currently completing a Master of Business Analytics at **Monash University**, building on my undergraduate studies in **Economics**.  
-My academic journey has strengthened my skills in data analysis, interpretation, and communication, and I am particularly interested in how analytical tools can inform evidence-based decisions in health, policy, and business.
+I am a data analyst based in Melbourne, completing a Master of Business Analytics at **Monash University** (expected July 2027). Before that I studied **Economics** at Fergusson College, Pune, which is where I got hooked on using data to answer real questions about policy, health and business.
 
-I am developing proficiency in **R, Python, Quarto, and GitHub**, with a focus on reproducible workflows and clear data communication. Through projects and coursework, I have enjoyed working on tasks that involve cleaning and transforming complex datasets, creating effective visualisations, and presenting insights in a way that is accessible to different audiences.
+I care about getting the method right and then explaining the result plainly: what the data shows, how confident we can be, and what it does not tell us.
 
-Outside of university, I prioritise health and balance- I train regularly and keep learning about nutrition. I also enjoy hands-on creative work, like building LEGO or cooking, and I unwind by rewatching a few of my favourite series.
+## Experience
+
+**Data Analyst Intern, Educators SA** (industry placement through Monash, remote) · *August 2026 – present*\
+Building a member engagement model for a peak body representing around 15,000 educators across 61 associations. I built a reproducible R pipeline that joins membership and event data into an association-level feature table, and deployed an R Shiny dashboard that scores and segments engagement so leadership can track and act on it.
+
+**HR Analytics Intern, Suzlon Energy** (Pune) · *June – August 2023*\
+Analysed recruitment data in Excel and R and built Tableau dashboards to report key HR metrics.
+
+## Projects
+
+Every post on this site is written in Quarto, with the full code on GitHub.
+
+-   [**Did closing police station counters increase crime in Victoria?**](posts/police_closure/police_station_closure.qmd) A difference-in-differences and event-study analysis of Victoria Police's 2023-24 reception hour cuts across 79 local government areas.
+-   [**How busy are Melbourne's CBD crossings?**](posts/pedestrian/pedestrian.qmd) Modelling pedestrian counts with probability distributions, bootstrapping and confidence intervals.
+-   [**Do fast pit stops win F1 races?**](posts/f1/f1.qmd) Regression and bootstrap analysis of Formula 1 pit stop times and race results.
+
+## Skills
+
+-   **Languages and tools:** R, Python, SQL, Git and GitHub, Excel, SPSS
+-   **Visualisation and reporting:** ggplot2, R Shiny, Plotly, Tableau, Quarto, R Markdown
+-   **Methods:** regression and econometric modelling, causal inference (difference-in-differences, fixed effects, event studies), hypothesis testing, bootstrapping, time series analysis, predictive modelling, data cleaning and wrangling
+
+## Outside Work
+
+I prioritise health and balance: I train regularly and keep learning about nutrition. I also enjoy hands-on creative work, like building LEGO or cooking, and I unwind by rewatching a few of my favourite series.

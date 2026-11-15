@@ -4,14 +4,14 @@
     "href": "about.html",
     "title": "Jyovika Aswale",
     "section": "",
-    "text": "I am currently completing a Master of Business Analytics at Monash University, building on my undergraduate studies in Economics.\nMy academic journey has strengthened my skills in data analysis, interpretation, and communication, and I am particularly interested in how analytical tools can inform evidence-based decisions in health, policy, and business.\nI am developing proficiency in R, Python, Quarto, and GitHub, with a focus on reproducible workflows and clear data communication. Through projects and coursework, I have enjoyed working on tasks that involve cleaning and transforming complex datasets, creating effective visualisations, and presenting insights in a way that is accessible to different audiences.\nOutside of university, I prioritise health and balance- I train regularly and keep learning about nutrition. I also enjoy hands-on creative work, like building LEGO or cooking, and I unwind by rewatching a few of my favourite series."
+    "text": "I am a data analyst based in Melbourne, completing a Master of Business Analytics at Monash University (expected July 2027). Before that I studied Economics at Fergusson College, Pune, which is where I got hooked on using data to answer real questions about policy, health and business.\nI care about getting the method right and then explaining the result plainly: what the data shows, how confident we can be, and what it does not tell us."
   },
   {
     "objectID": "about.html#about-me",
     "href": "about.html#about-me",
     "title": "Jyovika Aswale",
     "section": "",
-    "text": "I am currently completing a Master of Business Analytics at Monash University, building on my undergraduate studies in Economics.\nMy academic journey has strengthened my skills in data analysis, interpretation, and communication, and I am particularly interested in how analytical tools can inform evidence-based decisions in health, policy, and business.\nI am developing proficiency in R, Python, Quarto, and GitHub, with a focus on reproducible workflows and clear data communication. Through projects and coursework, I have enjoyed working on tasks that involve cleaning and transforming complex datasets, creating effective visualisations, and presenting insights in a way that is accessible to different audiences.\nOutside of university, I prioritise health and balance- I train regularly and keep learning about nutrition. I also enjoy hands-on creative work, like building LEGO or cooking, and I unwind by rewatching a few of my favourite series."
+    "text": "I am a data analyst based in Melbourne, completing a Master of Business Analytics at Monash University (expected July 2027). Before that I studied Economics at Fergusson College, Pune, which is where I got hooked on using data to answer real questions about policy, health and business.\nI care about getting the method right and then explaining the result plainly: what the data shows, how confident we can be, and what it does not tell us."
   },
   {
     "objectID": "posts/f1/f1.html",
@@ -201,5 +201,33 @@
     "title": "Did Closing Police Station Counters Increase Crime in Victoria?",
     "section": "References",
     "text": "References\nData\n\nCrime Statistics Agency Victoria (2026). Recorded criminal incidents and recorded offences by local government area, year ending March 2026 [Data tables]. https://www.crimestatistics.vic.gov.au/crime-statistics/latest-victorian-crime-data/download-data\nVictoria Police (2023). Announcement of reduced reception counter hours at 43 police stations, 3 November 2023, as reported in local media, e.g. Hodson, G. (2023, 9 November). Reduced counter hours coming to local police stations. West Vic News.\n\nNews coverage\n\nMount Evelyn Mail (2026, 12 June). Police reject crime, counter hour correlation.\nABC News (2026, 27 May). Reception hours slashed at police stations in Melbourne’s outer-north.\n\nMethods\n\nAngrist, J. D., & Pischke, J.-S. (2009). Mostly Harmless Econometrics: An Empiricist’s Companion. Princeton University Press. https://doi.org/10.1515/9781400829828\nRoth, J. (2022). Pretest with caution: Event-study estimates after testing for parallel trends. American Economic Review: Insights, 4(3), 305–322. https://doi.org/10.1257/aeri.20210236\n\nSoftware\n\nR Core Team (2025). R: A language and environment for statistical computing. R Foundation for Statistical Computing.\nBergé, L. (2018). Efficient estimation of maximum likelihood models with multiple fixed-effects: the R package FENmlm. CREA Discussion Papers, 13. (fixest 0.14.2)\nWickham, H. et al. (2019). Welcome to the tidyverse. Journal of Open Source Software, 4(43), 1686. https://doi.org/10.21105/joss.01686\nreadxl, broom, knitr and kableExtra were used for data import and tables."
+  },
+  {
+    "objectID": "about.html#experience",
+    "href": "about.html#experience",
+    "title": "Jyovika Aswale",
+    "section": "Experience",
+    "text": "Experience\nData Analyst Intern, Educators SA (industry placement through Monash, remote) · August 2026 – present\nBuilding a member engagement model for a peak body representing around 15,000 educators across 61 associations. I built a reproducible R pipeline that joins membership and event data into an association-level feature table, and deployed an R Shiny dashboard that scores and segments engagement so leadership can track and act on it.\nHR Analytics Intern, Suzlon Energy (Pune) · June – August 2023\nAnalysed recruitment data in Excel and R and built Tableau dashboards to report key HR metrics."
+  },
+  {
+    "objectID": "about.html#projects",
+    "href": "about.html#projects",
+    "title": "Jyovika Aswale",
+    "section": "Projects",
+    "text": "Projects\nEvery post on this site is written in Quarto, with the full code on GitHub.\n\nDid closing police station counters increase crime in Victoria? A difference-in-differences and event-study analysis of Victoria Police’s 2023-24 reception hour cuts across 79 local government areas.\nHow busy are Melbourne’s CBD crossings? Modelling pedestrian counts with probability distributions, bootstrapping and confidence intervals.\nDo fast pit stops win F1 races? Regression and bootstrap analysis of Formula 1 pit stop times and race results."
+  },
+  {
+    "objectID": "about.html#skills",
+    "href": "about.html#skills",
+    "title": "Jyovika Aswale",
+    "section": "Skills",
+    "text": "Skills\n\nLanguages and tools: R, Python, SQL, Git and GitHub, Excel, SPSS\nVisualisation and reporting: ggplot2, R Shiny, Plotly, Tableau, Quarto, R Markdown\nMethods: regression and econometric modelling, causal inference (difference-in-differences, fixed effects, event studies), hypothesis testing, bootstrapping, time series analysis, predictive modelling, data cleaning and wrangling"
+  },
+  {
+    "objectID": "about.html#outside-work",
+    "href": "about.html#outside-work",
+    "title": "Jyovika Aswale",
+    "section": "Outside Work",
+    "text": "Outside Work\nI prioritise health and balance: I train regularly and keep learning about nutrition. I also enjoy hands-on creative work, like building LEGO or cooking, and I unwind by rewatching a few of my favourite series."
   }
 ]

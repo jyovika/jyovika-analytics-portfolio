@@ -243,3 +243,27 @@ Only burglary shows a clear change: treated LGAs recorded about `r round(burglar
 ## Conclusion
 
 Areas where Victoria Police cut reception hours recorded around `r round(to_pct(did_est$estimate))`% more criminal incidents afterwards than comparable areas, with the increase appearing from 2025 and concentrated in burglary. That is in the direction critics of the policy have claimed, but it is much smaller than the headline figures, only just statistically significant, and rests on an assumption the data supports imperfectly. The evidence is enough to question the claim that the changes had no effect on community safety, and not enough to say with confidence that they caused crime to rise.
+
+## References
+
+**Data**
+
+-   Crime Statistics Agency Victoria (2026). *Recorded criminal incidents and recorded offences by local government area, year ending March 2026* \[Data tables\]. <https://www.crimestatistics.vic.gov.au/crime-statistics/latest-victorian-crime-data/download-data>
+-   Victoria Police (2023). Announcement of reduced reception counter hours at 43 police stations, 3 November 2023, as reported in local media, e.g. Hodson, G. (2023, 9 November). [Reduced counter hours coming to local police stations](https://www.westvicnews.com.au/reduced-counter-hours-coming-to-local-police-stations-2023-11-09). *West Vic News*.
+
+**News coverage**
+
+-   Mount Evelyn Mail (2026, 12 June). [Police reject crime, counter hour correlation](https://mountevelyn.mailcommunity.com.au/news/2026-06-12/police-reject-crime-counter-hour-correlation/).
+-   ABC News (2026, 27 May). [Reception hours slashed at police stations in Melbourne's outer-north](https://www.abc.net.au/news/2026-05-27/reception-hours-slashed-at-suburban-police-stations-melbourne/106724456).
+
+**Methods**
+
+-   Angrist, J. D., & Pischke, J.-S. (2009). *Mostly Harmless Econometrics: An Empiricist's Companion*. Princeton University Press. <https://doi.org/10.1515/9781400829828>
+-   Roth, J. (2022). Pretest with caution: Event-study estimates after testing for parallel trends. *American Economic Review: Insights*, 4(3), 305–322. <https://doi.org/10.1257/aeri.20210236>
+
+**Software**
+
+-   R Core Team (2025). *R: A language and environment for statistical computing*. R Foundation for Statistical Computing.
+-   Bergé, L. (2018). Efficient estimation of maximum likelihood models with multiple fixed-effects: the R package FENmlm. *CREA Discussion Papers*, 13. (`fixest` `r packageVersion("fixest")`)
+-   Wickham, H. et al. (2019). Welcome to the tidyverse. *Journal of Open Source Software*, 4(43), 1686. <https://doi.org/10.21105/joss.01686>
+-   `readxl`, `broom`, `knitr` and `kableExtra` were used for data import and tables.

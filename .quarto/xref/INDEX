@@ -22,5 +22,11 @@
   },
   "posts/pedestrian/pedestrian.qmd": {
     "pedestrian.html": "5e0c5514"
+  },
+  "posts/police_closure/police_station_closure.qmd": {
+    "police_station_closure.html": "fd931c3c"
+  },
+  "posts/food-nutrition/food_nutrition.qmd": {
+    "food_nutrition.html": "ec1de543"
   }
 }

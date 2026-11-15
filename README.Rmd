@@ -1,7 +1,7 @@
 ---
 title: "README"
 author: "Jyovika Aswale"
-date: "2025-12-02"
+date: "2026-11-16"
 output: github_document
 ---
 
@@ -17,6 +17,7 @@ I use this portfolio to demonstrate my approach to analysis:
 
 #### Data Analysis and Modelling
 
+  - Causal inference: difference-in-differences, fixed effects and event studies
   - Distribution fitting
   - Simulation and bootstrapping
   - Regression and sensitivity analysis
@@ -52,7 +53,7 @@ An R powered exploration of Formula 1 data
   
   - Custom colour palettes and visual styling
   
-- Blog: available on my website
+- Blog: [read it on my website](https://jyovika.github.io/jyovika-analytics-portfolio/posts/f1/f1.html)
 
 #### 2. How Busy Are Melbourne’s CBD Crossings?
 
@@ -70,12 +71,30 @@ A statistical deep dive into pedestrian flow
   
   - Revenue estimation using binomial proportion confidence intervals
   
-- Blog: available on my website
+- Blog: [read it on my website](https://jyovika.github.io/jyovika-analytics-portfolio/posts/pedestrian/pedestrian.html)
+
+#### 3. Did Closing Police Station Counters Increase Crime in Victoria?
+
+A causal analysis of Victoria Police's 2023-24 reception hour cuts
+
+- Skills: difference-in-differences, fixed effects regression, event studies, Poisson models
+
+- Highlights:
+
+  - Panel of recorded crime for all 79 Victorian local government areas, 2017 to 2026
+  
+  - Treatment group built by mapping 43 stations with reduced hours to their local government areas
+  
+  - Event-study check of the parallel trends assumption, reported honestly where it is imperfect
+  
+  - Separate estimates by offence type, with burglary the only clear change
+  
+- Blog: [read it on my website](https://jyovika.github.io/jyovika-analytics-portfolio/posts/police_closure/police_station_closure.html)
 
 
 ```{bash, eval = FALSE}
 .
-├── .quarto/                     # Quarto configuration and site system files
+├── _freeze/                     # Stored results of each post's R code, so the site renders without re-running it
 ├── data/                        # Datasets used in the analytics projects
 ├── docs/                        # Rendered HTML site output for GitHub Pages
 ├── posts/                       # All analytics blog posts (Quarto .qmd files)
@@ -110,13 +129,20 @@ The full site is deployed on GitHub Pages:
 
 If you want to render the full site:
 
-```{r, eval=FALSE}
-# install required packages
-install.packages(c("tidyverse", "MASS", "boot", "broom", "here"))
+Install [Quarto](https://quarto.org) and these R packages:
 
-# render the site
-quarto::quarto_render()
+```{r, eval=FALSE}
+install.packages(c("tidyverse", "MASS", "boot", "broom", "here", "rsample",
+                   "scales", "readxl", "fixest", "kableExtra", "knitr"))
 ```
+
+Then, from the project folder:
+
+```{bash, eval=FALSE}
+quarto render
+```
+
+The site is written to `docs/`, which GitHub Pages serves directly, so commit the updated `docs/` along with your changes.
 
 ## 🤝 Collaboration Notes
 
@@ -124,10 +150,8 @@ Some projects began as university group assignments.
 
 I expanded and rewrote the analysis for public presentation.
 
-Original contributors are acknowledged inside the relevant posts.🤝 Collaboration Notes
-
 ## 📫 Contact
 
 If you want to talk about analytics, visualisation, or collaboration:
 
-Email: jyovika.aswale@gmail.com
+Email: jyo.aswale@gmail.com

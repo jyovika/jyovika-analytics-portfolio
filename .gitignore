@@ -50,3 +50,6 @@ rsconnect/
 
 
 /.quarto/
+
+# USDA food data, too large for GitHub
+data/food_nutrition/

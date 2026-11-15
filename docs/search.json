@@ -133,10 +133,66 @@
     "text": "Final Thoughts\nWhat started as a simple exploration turned into a deeper look at how Melbourne moves. Each crossing behaves differently and those differences matter. They influence engineering decisions, marketing opportunities, and even the reliability of revenue estimates.\nSouthern Cross is steady. Flinders Street is slightly lower but similar in structure. QV Melbourne is on its own path with heavy traffic and large fluctuations that give it both challenges and commercial potential. Data lets us see these places as more than busy intersections. They become systems with measurable behaviour and predictable characteristics. That is what makes this type of analysis rewarding. It connects statistical modelling to real city life.\n\nCode and Reproducibility\n\n\n\n\n\n\nClick to View Full Code and Data\n\n\n\n\n\nFull datasets, scripts, and the original group project are available here:\n\nGroup source code: https://github.com/jyovika/Pedestrian_Crossings_Data_Analysis\n\nMy analytics portfolio repository: https://github.com/jyovika/jyovika-analytics-portfolio"
   },
   {
+    "objectID": "posts/police_closure/police_station_closure.html",
+    "href": "posts/police_closure/police_station_closure.html",
+    "title": "Did Closing Police Station Counters Increase Crime in Victoria?",
+    "section": "",
+    "text": "In late 2023, Victoria Police reduced public reception counter hours at 43 stations across the state, framing the move as a way to free up officers for street patrols. The policy rolled out in two main phases: 23 stations from November 2023, and a further 20 from January 2024.\nThe stated logic was simple: fewer officers staffing front counters means more officers on the street, which should deter crime. But does the data support that?\nThis is a live policy debate. In June 2026, the Herald Sun reported that crime had risen 22.4% in areas with reduced station hours, faster than in the rest of the state, and Victoria Police rejected any link between counter hours and crime. A further round of cuts in Melbourne’s outer north had taken effect only days earlier. I wanted to test the claim properly using a causal inference framework rather than a simple before-and-after comparison."
+  },
+  {
+    "objectID": "posts/police_closure/police_station_closure.html#background",
+    "href": "posts/police_closure/police_station_closure.html#background",
+    "title": "Did Closing Police Station Counters Increase Crime in Victoria?",
+    "section": "",
+    "text": "In late 2023, Victoria Police reduced public reception counter hours at 43 stations across the state, framing the move as a way to free up officers for street patrols. The policy rolled out in two main phases: 23 stations from November 2023, and a further 20 from January 2024.\nThe stated logic was simple: fewer officers staffing front counters means more officers on the street, which should deter crime. But does the data support that?\nThis is a live policy debate. In June 2026, the Herald Sun reported that crime had risen 22.4% in areas with reduced station hours, faster than in the rest of the state, and Victoria Police rejected any link between counter hours and crime. A further round of cuts in Melbourne’s outer north had taken effect only days earlier. I wanted to test the claim properly using a causal inference framework rather than a simple before-and-after comparison."
+  },
+  {
+    "objectID": "posts/police_closure/police_station_closure.html#data",
+    "href": "posts/police_closure/police_station_closure.html#data",
+    "title": "Did Closing Police Station Counters Increase Crime in Victoria?",
+    "section": "Data",
+    "text": "Data\nAll crime data comes from the Crime Statistics Agency Victoria, an independent body that publishes recorded criminal incidents by local government area (LGA) annually (year ending March). The dataset covers all 79 Victorian LGAs from 2017 to 2026.\nThe station closure list was compiled from Victoria Police’s own November 2023 public announcement, which named all 43 affected stations and their revised hours. The May 2026 cuts fall after the end of the data and are not part of the analysis. Each station was mapped to its LGA to build a treatment group of 34 LGAs."
+  },
+  {
+    "objectID": "posts/police_closure/police_station_closure.html#method",
+    "href": "posts/police_closure/police_station_closure.html#method",
+    "title": "Did Closing Police Station Counters Increase Crime in Victoria?",
+    "section": "Method",
+    "text": "Method\nI used a difference-in-differences (DiD) design, which compares the change in crime in treated LGAs (those with reduced hours) against the change in control LGAs (those that kept full hours), over the same period. This controls for statewide trends such as cost-of-living pressures and post-COVID crime recovery, which would have affected all LGAs regardless of the policy.\nThe model includes LGA fixed effects (controlling for permanent differences between areas) and year fixed effects (controlling for statewide shocks), with standard errors clustered by LGA.\nThe outcome is the log of recorded incidents, so the estimate reads as a percentage change. This matters because treated LGAs are much larger than control LGAs, averaging roughly 7,800 incidents a year against 3,000. A model in raw counts would mistake that difference in size for a difference in trend.\n\n\n\nDiD estimate: change in recorded criminal incidents in treated LGAs, with 95 percent interval\n\n\nEstimate (%)\nLower 95% (%)\nUpper 95% (%)\np-value\n\n\n\n\n5\n0.1\n10.2\n0.047"
+  },
+  {
+    "objectID": "posts/police_closure/police_station_closure.html#checking-the-key-assumption",
+    "href": "posts/police_closure/police_station_closure.html#checking-the-key-assumption",
+    "title": "Did Closing Police Station Counters Increase Crime in Victoria?",
+    "section": "Checking the Key Assumption",
+    "text": "Checking the Key Assumption\nThe critical assumption in DiD is parallel trends: that treated and control LGAs were following the same crime trajectory before the policy. To check it, I estimated the gap between the two groups separately for every year, relative to 2023, the last year before the reductions. If the assumption holds, the gaps before 2023 should sit close to zero.\n\n\n\n\n\n\n\n\n\nThe assumption holds only loosely. No single pre-policy year is significantly different from zero at the 5% level, but the gap drifts downward, from about 9% above the 2023 gap in 2017 to about 6% below it in 2022, and the six pre-policy years are jointly significant (p = 0.007). Treated LGAs were not on exactly the same path as the controls.\nWhat the plot does show clearly is the timing. The gap is flat in 2024, which covers only the first two to four months of reduced hours, then jumps to around 11% in 2025 and 2026, larger than any pre-policy movement."
+  },
+  {
+    "objectID": "posts/police_closure/police_station_closure.html#results",
+    "href": "posts/police_closure/police_station_closure.html#results",
+    "title": "Did Closing Police Station Counters Increase Crime in Victoria?",
+    "section": "Results",
+    "text": "Results\nAfter accounting for LGA and year fixed effects, treated LGAs recorded approximately 5% more criminal incidents than would have been expected had they followed the control group trend (95% interval 0.1% to 10.2%, p = 0.047). The result is significant at the 5% level, but only just, and the imperfect pre-policy trends mean it should be read as suggestive rather than conclusive.\nThe direction is consistent with the Herald Sun’s finding, though the size of the effect is much smaller than a raw before-and-after comparison implies.\n\nWhich offences moved?\nIf shorter counter hours matter, the effect should not be spread evenly across every kind of crime. I ran the same model separately for five common offence types, this time on recorded offences rather than incidents.\n\n\n\nDiD estimates by offence type\n\n\nOffence type\nEstimate (%)\nLower 95% (%)\nUpper 95% (%)\np-value\n\n\n\n\nA20 Assault and related offences\n-1.6\n-6.9\n4.0\n0.563\n\n\nA50 Robbery\n-5.9\n-16.6\n6.2\n0.323\n\n\nB30 Burglary/Break and enter\n11.6\n1.4\n22.8\n0.024\n\n\nB40 Theft\n2.8\n-4.9\n11.1\n0.490\n\n\nD20 Disorderly and offensive conduct\n-4.2\n-18.6\n12.7\n0.606\n\n\n\n\n\nOnly burglary shows a clear change: treated LGAs recorded about 11.6% more burglaries and break-ins than the control trend would predict (p = 0.024). Theft, assault, robbery and disorderly conduct are all statistically indistinguishable from zero, with wide intervals. The overall increase therefore looks concentrated in property crime rather than violence or public order."
+  },
+  {
+    "objectID": "posts/police_closure/police_station_closure.html#limitations",
+    "href": "posts/police_closure/police_station_closure.html#limitations",
+    "title": "Did Closing Police Station Counters Increase Crime in Victoria?",
+    "section": "Limitations",
+    "text": "Limitations\n\nRecorded crime is not the same as crime. A closed counter could change how much crime gets reported as well as how much occurs. If anything, fewer walk-in reports would push recorded crime down, which would make these estimates conservative, but the data cannot separate the two.\nStations were not chosen at random. Victoria Police selected which counters to cut, and the pre-policy trends were not perfectly parallel. Something else that differs between the two groups after 2023 could explain part of the gap.\nLGAs are a coarse unit. A treated LGA can contain several stations that kept full hours, so the analysis measures the effect of having at least one reduced counter, not of living near one.\nThe post-policy window is short. There are three data years after the change, and the first covers only a few months of reduced hours."
+  },
+  {
+    "objectID": "posts/police_closure/police_station_closure.html#conclusion",
+    "href": "posts/police_closure/police_station_closure.html#conclusion",
+    "title": "Did Closing Police Station Counters Increase Crime in Victoria?",
+    "section": "Conclusion",
+    "text": "Conclusion\nAreas where Victoria Police cut reception hours recorded around 5% more criminal incidents afterwards than comparable areas, with the increase appearing from 2025 and concentrated in burglary. That is in the direction critics of the policy have claimed, but it is much smaller than the headline figures, only just statistically significant, and rests on an assumption the data supports imperfectly. The evidence is enough to question the claim that the changes had no effect on community safety, and not enough to say with confidence that they caused crime to rise."
+  },
+  {
     "objectID": "index.html",
     "href": "index.html",
     "title": "Blogs",
     "section": "",
-    "text": "How Busy Are Melbourne’s CBD Crossings? A Statistical Deep Dive\n\n\n\nR\n\nStatistics\n\nPedestrian counts\n\nMelbourne\n\n\n\nModelling pedestrian flows at Southern Cross, Flinders Street, and QV Melbourne using probability models, bootstrapping, and confidence intervals.\n\n\n\n\n\nDec 2, 2025\n\n\nJyovika Aswale\n\n\n\n\n\n\n\n\n\n\n\n\nDo Fast Pit Stops Win F1 Races - or Is It Just Hype?\n\n\n\nR\n\nData Analysis\n\nVisualisation\n\nFormula1\n\n\n\nAn R-powered exploration of Formula 1 performance, lap times, and insights.\n\n\n\n\n\nNov 30, 2025\n\n\n\n\n\nNo matching items"
+    "text": "Did Closing Police Station Counters Increase Crime in Victoria?\n\n\n\nR\n\ncausal inference\n\npublic policy\n\nVictoria\n\n\n\nA difference-in-differences analysis of Victoria Police’s 2023-24 reception hour reductions across 34 LGAs\n\n\n\n\n\nNov 16, 2026\n\n\nJyovika Aswale\n\n\n\n\n\n\n\n\n\n\n\n\nHow Busy Are Melbourne’s CBD Crossings? A Statistical Deep Dive\n\n\n\nR\n\nStatistics\n\nPedestrian counts\n\nMelbourne\n\n\n\nModelling pedestrian flows at Southern Cross, Flinders Street, and QV Melbourne using probability models, bootstrapping, and confidence intervals.\n\n\n\n\n\nDec 2, 2025\n\n\nJyovika Aswale\n\n\n\n\n\n\n\n\n\n\n\n\nDo Fast Pit Stops Win F1 Races - or Is It Just Hype?\n\n\n\nR\n\nData Analysis\n\nVisualisation\n\nFormula1\n\n\n\nAn R-powered exploration of Formula 1 performance, lap times, and insights.\n\n\n\n\n\nNov 30, 2025\n\n\n\n\n\nNo matching items"
   }
 ]

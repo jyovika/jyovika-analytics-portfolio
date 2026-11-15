@@ -2,23 +2,24 @@
 title: "Did Closing Police Station Counters Increase Crime in Victoria?"
 description: "A difference-in-differences analysis of Victoria Police's 2023-24 reception hour reductions across 34 LGAs"
 author: "Jyovika Aswale"
+date: 2026-11-16
 categories: [R, causal inference, public policy, Victoria]
 editor: visual
 ---
 
 ## Background
 
-In late 2023, Victoria Police reduced public reception counter hours at 43 stations across the state, framing the move as a way to free up officers for street patrols. The policy rolled out in two main phases: 23 stations from November 2023, and a further 20 from early 2024.
+In late 2023, Victoria Police reduced public reception counter hours at 43 stations across the state, framing the move as a way to free up officers for street patrols. The policy rolled out in two main phases: 23 stations from November 2023, and a further 20 from January 2024.
 
 The stated logic was simple: fewer officers staffing front counters means more officers on the street, which should deter crime. But does the data support that?
 
-This is a live policy debate. In June 2026, a Herald Sun investigation alleged that crime rose 22% in areas with reduced station hours, compared to 15.7% statewide. The investigation also found that Victoria Police had initially cited flawed calculations to defend the policy. I wanted to test the claim properly using a causal inference framework rather than a simple before-and-after comparison.
+This is a live policy debate. In June 2026, the Herald Sun reported that crime had risen 22.4% in areas with reduced station hours, faster than in the rest of the state, and Victoria Police [rejected any link](https://mountevelyn.mailcommunity.com.au/news/2026-06-12/police-reject-crime-counter-hour-correlation/) between counter hours and crime. A [further round of cuts](https://www.abc.net.au/news/2026-05-27/reception-hours-slashed-at-suburban-police-stations-melbourne/106724456) in Melbourne's outer north had taken effect only days earlier. I wanted to test the claim properly using a causal inference framework rather than a simple before-and-after comparison.
 
 ## Data
 
-All crime data comes from the [Crime Statistics Agency Victoria](https://www.crimestatistics.vic.gov.au/crime-statistics/latest-victorian-crime-data/download-data), an independent body that publishes recorded criminal incidents by local government area (LGA) annually (year ending March). The dataset covers 80 Victorian LGAs from 2017 to 2026.
+All crime data comes from the [Crime Statistics Agency Victoria](https://www.crimestatistics.vic.gov.au/crime-statistics/latest-victorian-crime-data/download-data), an independent body that publishes recorded criminal incidents by local government area (LGA) annually (year ending March). The dataset covers all 79 Victorian LGAs from 2017 to 2026.
 
-The station closure list was compiled from Victoria Police's own November 2023 public announcement, which named all 43 affected stations and their revised hours. Each station was mapped to its LGA to build a treatment group of 34 LGAs.
+The station closure list was compiled from Victoria Police's own November 2023 public announcement, which named all 43 affected stations and their revised hours. The May 2026 cuts fall after the end of the data and are not part of the analysis. Each station was mapped to its LGA to build a treatment group of 34 LGAs.
 
 ```{r, libraries, message=FALSE, echo=FALSE}
 library(tidyverse)
@@ -35,15 +36,24 @@ offences_path  <- here::here("data", "Police_station_closure", "Data_Tables_LGA_
 
 read_excel(incidents_path, sheet = 1, n_max = 10, col_names = FALSE)
 
-incidents_raw <- read_excel(incidents_path, sheet = "Table 01", skip = 1)
-offences_raw  <- read_excel(offences_path, sheet = "Table 01", skip = 1)
+incidents_raw <- read_excel(incidents_path, sheet = "Table 01")
+offences_raw  <- read_excel(offences_path, sheet = "Table 01")
 
 closures <- read_csv(here::here("data", "Police_station_closure", "station_closures.csv"))%>%
   select(-treatment_month)
 ```
+```{r, lists, echo=FALSE}
+exclude_lgas <- c("Total", "Victoria", "Unincorporated Vic",
+                  "Justice Institutions and Immigration Facilities")
+
+key_offences <- c("B30 Burglary/Break and enter", "B40 Theft",
+                  "A20 Assault and related offences",
+                  "D20 Disorderly and offensive conduct",
+                  "A50 Robbery")
+```
 
 ```{r, cleaning, include=FALSE, echo=FALSE}
-exclude_lgas <- c("Total", "Victoria", "Unincorporated Vic")
+
 
 incidents_clean <- incidents_raw %>%
   rename(
@@ -53,7 +63,8 @@ incidents_clean <- incidents_raw %>%
     lga                 = 4,
     incidents_recorded  = 5,
     rate_per_100k       = 6) %>%
-  filter(!lga %in% exclude_lgas)
+  filter(!lga %in% exclude_lgas) %>%
+  select(-month)
 
 offences_clean <- offences_raw %>%
   rename(
@@ -63,9 +74,24 @@ offences_clean <- offences_raw %>%
     lga                 = 4,
     offence_count       = 5,
     rate_per_100k       = 6) %>%
-  filter(
-    !lga %in% exclude_lgas,
-    police_service_area != "Justice Institutions and Immigration Facilities")
+  filter(!lga %in% exclude_lgas) %>%
+  select(-month)
+
+offences_detail <- read_excel(offences_path, sheet = "Table 02") %>%
+  rename(
+    year              = 1,
+    month             = 2,
+    police_service_area = 3,
+    lga               = 4,
+    division          = 5,
+    subdivision       = 6,
+    subgroup          = 7,
+    offence_count     = 8,
+    psa_rate_per_100k = 9,
+    lga_rate_per_100k = 10) %>%
+  filter(!lga %in% exclude_lgas) %>%
+  select(-month, -psa_rate_per_100k)
+
 
 ```
 
@@ -82,6 +108,20 @@ panel <- incidents_clean %>%
     treated = if_else(!is.na(treatment_year_csa), 1L, 0L),
     post    = if_else(year >= 2024, 1L, 0L),
     did     = treated * post)
+
+offence_panel <- offences_detail %>%
+  filter(subdivision %in% key_offences) %>%
+  # Table 02 has one row per offence subgroup, and no row where the count is zero
+  group_by(year, lga, subdivision) %>%
+  summarise(offence_count = sum(offence_count), .groups = "drop") %>%
+  complete(year, lga, subdivision, fill = list(offence_count = 0)) %>%
+  left_join(treatment, by = "lga") %>%
+  mutate(
+    treated = if_else(!is.na(treatment_year_csa), 1L, 0L),
+    post    = if_else(year >= 2024, 1L, 0L),
+    did     = treated * post
+  )
+
 ```
 
 ## Method
@@ -90,19 +130,26 @@ I used a difference-in-differences (DiD) design, which compares the change in cr
 
 The model includes LGA fixed effects (controlling for permanent differences between areas) and year fixed effects (controlling for statewide shocks), with standard errors clustered by LGA.
 
+The outcome is the log of recorded incidents, so the estimate reads as a percentage change. This matters because treated LGAs are much larger than control LGAs, averaging roughly 7,800 incidents a year against 3,000. A model in raw counts would mistake that difference in size for a difference in trend.
+
 ```{r, did-regression, echo=FALSE}
 did_model <- feols(
-  incidents_recorded ~ did | lga + year,
+  log(incidents_recorded) ~ did | lga + year,
   data = panel,
   cluster = ~lga)
 
-tidy(did_model, conf.int = TRUE, conf.level = 0.95) %>%
-  select(estimate, conf.low, conf.high) %>%
+# log points to percent
+to_pct <- function(x) (exp(x) - 1) * 100
+
+did_est <- tidy(did_model, conf.int = TRUE, conf.level = 0.95)
+
+did_est %>%
+  transmute(to_pct(estimate), to_pct(conf.low), to_pct(conf.high), p.value) %>%
   kable(
-    caption = "Bootstrap estimate for pit time effect with 95 percent interval",
-    col.names = c("Mean Estimate", "Lower 95%", "Upper 95%"),
-    digits = 5,
-    align = c("c", "c", "c")) %>%
+    caption = "DiD estimate: change in recorded criminal incidents in treated LGAs, with 95 percent interval",
+    col.names = c("Estimate (%)", "Lower 95% (%)", "Upper 95% (%)", "p-value"),
+    digits = c(1, 1, 1, 3),
+    align = "cccc") %>%
   kable_styling(
     bootstrap_options = c("condensed", "striped"),
     full_width = FALSE,
@@ -113,32 +160,86 @@ tidy(did_model, conf.int = TRUE, conf.level = 0.95) %>%
 
 ## Checking the Key Assumption
 
-The critical assumption in DiD is parallel trends: that treated and control LGAs were following the same crime trajectory before the policy. Indexing both groups to 2017 = 100 makes this easy to assess visually.
+The critical assumption in DiD is parallel trends: that treated and control LGAs were following the same crime trajectory before the policy. To check it, I estimated the gap between the two groups separately for every year, relative to 2023, the last year before the reductions. If the assumption holds, the gaps before 2023 should sit close to zero.
 
 ```{r,parallel-trends, echo=FALSE}
-panel %>%
-  group_by(year, treated) %>%
-  summarise(avg_incidents = mean(incidents_recorded), .groups = "drop") %>%
-  group_by(treated) %>%
-  mutate(indexed = avg_incidents / avg_incidents[year == 2017] * 100) %>%
-  mutate(group = if_else(treated == 1, "Treatment", "Control")) %>%
-  ggplot(aes(x = year, y = indexed, colour = group)) +
-  geom_line(linewidth = 1) +
-  geom_vline(xintercept = 2024, linetype = "dashed", colour = "grey40") +
+event_model <- feols(
+  log(incidents_recorded) ~ i(year, treated, ref = 2023) | lga + year,
+  data = panel,
+  cluster = ~lga)
+
+event_est <- tidy(event_model, conf.int = TRUE) %>%
+  mutate(year = parse_number(term)) %>%
+  add_row(year = 2023, estimate = 0, conf.low = 0, conf.high = 0)
+
+event_est %>%
+  ggplot(aes(x = year, y = to_pct(estimate))) +
+  geom_hline(yintercept = 0, colour = "grey40") +
+  geom_vline(xintercept = 2023.5, linetype = "dashed", colour = "grey40") +
+  geom_pointrange(aes(ymin = to_pct(conf.low), ymax = to_pct(conf.high)),
+                  colour = "#4F6D7A") +
+  scale_x_continuous(breaks = 2017:2026) +
   labs(
-    title = "Indexed criminal incidents (2017 = 100): treatment vs control LGAs",
-    subtitle = "Dashed line = reception hour reductions begin (CSA year 2024)",
+    title = "Gap between treatment and control LGAs, relative to 2023",
+    subtitle = "Dashed line = reception hour reductions begin. Bars are 95% intervals",
     x = "Year (ending March)",
-    y = "Index (2017 = 100)",
-    colour = NULL) +
+    y = "Difference in incidents (%)") +
   theme_minimal()
+
+pretrend_p <- wald(event_model, "year::(2017|2018|2019|2020|2021|2022)", print = FALSE)$p
 ```
 
-The lines track almost identically from 2017 to 2024, including the same COVID-era dip in 2020-2022 and the same recovery pattern. This strongly supports the parallel trends assumption and gives confidence in the DiD estimate.
+The assumption holds only loosely. No single pre-policy year is significantly different from zero at the 5% level, but the gap drifts downward, from about 9% above the 2023 gap in 2017 to about 6% below it in 2022, and the six pre-policy years are jointly significant (p = `r round(pretrend_p, 3)`). Treated LGAs were not on exactly the same path as the controls.
+
+What the plot does show clearly is the timing. The gap is flat in 2024, which covers only the first two to four months of reduced hours, then jumps to around 11% in 2025 and 2026, larger than any pre-policy movement.
 
 ## Results
 
-After accounting for LGA and year fixed effects, treated LGAs experienced approximately **777 more criminal incidents per year** than would have been expected had they followed the control group trend. The result is statistically significant at the 1% level (p = 0.004).
+After accounting for LGA and year fixed effects, treated LGAs recorded approximately **`r round(to_pct(did_est$estimate), 1)`% more criminal incidents** than would have been expected had they followed the control group trend (95% interval `r round(to_pct(did_est$conf.low), 1)`% to `r round(to_pct(did_est$conf.high), 1)`%, p = `r round(did_est$p.value, 3)`). The result is significant at the 5% level, but only just, and the imperfect pre-policy trends mean it should be read as suggestive rather than conclusive.
 
-This is consistent with the Herald Sun's finding, and contradicts Victoria Police's framing that the reductions had no adverse impact on community safety.
+The direction is consistent with the Herald Sun's finding, though the size of the effect is much smaller than a raw before-and-after comparison implies.
 
+### Which offences moved?
+
+If shorter counter hours matter, the effect should not be spread evenly across every kind of crime. I ran the same model separately for five common offence types, this time on recorded offences rather than incidents.
+
+```{r, offence-models, echo=FALSE, message=FALSE}
+# Poisson rather than log-OLS: small LGAs record zero robberies in some years
+offence_models <- offence_panel %>%
+  split(.$subdivision) %>%
+  map(~ fepois(offence_count ~ did | lga + year, data = .x, cluster = ~lga))
+
+offence_summary <- map_dfr(offence_models, ~ tidy(.x, conf.int = TRUE),
+                           .id = "subdivision") %>%
+  transmute(subdivision, pct = to_pct(estimate), lo = to_pct(conf.low), hi = to_pct(conf.high), p.value)
+
+burglary <- filter(offence_summary, str_detect(subdivision, "Burglary"))
+
+offence_summary %>%
+  kable(
+    caption = "DiD estimates by offence type",
+    col.names = c("Offence type", "Estimate (%)", "Lower 95% (%)", "Upper 95% (%)", "p-value"),
+    digits = c(0, 1, 1, 1, 3),
+    align = "lcccc"
+  ) %>%
+  kable_styling(
+    bootstrap_options = c("condensed", "striped"),
+    full_width = FALSE,
+    position = "center",
+    font_size = 14
+  ) %>%
+  row_spec(0, bold = TRUE, color = "white", background = "#4F6D7A")
+```
+
+Only burglary shows a clear change: treated LGAs recorded about `r round(burglary$pct, 1)`% more burglaries and break-ins than the control trend would predict (p = `r round(burglary$p.value, 3)`). Theft, assault, robbery and disorderly conduct are all statistically indistinguishable from zero, with wide intervals. The overall increase therefore looks concentrated in property crime rather than violence or public order.
+
+## Limitations
+
+-   **Recorded crime is not the same as crime.** A closed counter could change how much crime gets reported as well as how much occurs. If anything, fewer walk-in reports would push recorded crime down, which would make these estimates conservative, but the data cannot separate the two.
+-   **Stations were not chosen at random.** Victoria Police selected which counters to cut, and the pre-policy trends were not perfectly parallel. Something else that differs between the two groups after 2023 could explain part of the gap.
+-   **LGAs are a coarse unit.** A treated LGA can contain several stations that kept full hours, so the analysis measures the effect of having at least one reduced counter, not of living near one.
+-   **The post-policy window is short.** There are three data years after the change, and the first covers only a few months of reduced hours.
+
+## Conclusion
+
+Areas where Victoria Police cut reception hours recorded around `r round(to_pct(did_est$estimate))`% more criminal incidents afterwards than comparable areas, with the increase appearing from 2025 and concentrated in burglary. That is in the direction critics of the policy have claimed, but it is much smaller than the headline figures, only just statistically significant, and rests on an assumption the data supports imperfectly. The evidence is enough to question the claim that the changes had no effect on community safety, and not enough to say with confidence that they caused crime to rise.

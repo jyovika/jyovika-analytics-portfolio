@@ -4,6 +4,8 @@ description: "A difference-in-differences analysis of Victoria Police's 2023-24 
 author: "Jyovika Aswale"
 date: 2026-11-16
 categories: [R, causal inference, public policy, Victoria]
+image: "police-thumbnail.jpg"
+title-block-banner: "police-banner.jpg"
 editor: visual
 ---
 

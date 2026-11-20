@@ -21,13 +21,6 @@
     "text": "Experience\nData Analyst Intern, Educators SA (industry placement through Monash, remote) · August 2026 – present\nBuilding a member engagement model for a peak body representing around 15,000 educators across 61 associations. I built a reproducible R pipeline that joins membership and event data into an association-level feature table, and deployed an R Shiny dashboard that scores and segments engagement so leadership can track and act on it.\nHR Analytics Intern, Suzlon Energy (Pune) · June – August 2023\nAnalysed recruitment data in Excel and R and built Tableau dashboards to report key HR metrics."
   },
   {
-    "objectID": "about.html#projects",
-    "href": "about.html#projects",
-    "title": "Jyovika Aswale",
-    "section": "Projects",
-    "text": "Projects\nEvery post on this site is written in Quarto, with the full code on GitHub.\n\nDid closing police station counters increase crime in Victoria? A difference-in-differences and event-study analysis of Victoria Police’s 2023-24 reception hour cuts across 79 local government areas.\nHow busy are Melbourne’s CBD crossings? Modelling pedestrian counts with probability distributions, bootstrapping and confidence intervals.\nDo fast pit stops win F1 races? Regression and bootstrap analysis of Formula 1 pit stop times and race results."
-  },
-  {
     "objectID": "about.html#skills",
     "href": "about.html#skills",
     "title": "Jyovika Aswale",
@@ -270,6 +263,6 @@
     "href": "index.html",
     "title": "Blogs",
     "section": "",
-    "text": "food\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nWho Actually Turns Up? Measuring Member Engagement from Event Registrations\n\n\n\nR\n\nShiny\n\ndata cleaning\n\ndashboard\n\ncase study\n\n\n\nAn industry placement case study: turning five years of ticketing exports into a person-level engagement model and an interactive dashboard\n\n\n\n\n\nNov 20, 2026\n\n\nJyovika Aswale\n\n\n\n\n\n\n\n\n\n\n\n\nDid Closing Police Station Counters Increase Crime in Victoria?\n\n\n\nR\n\ncausal inference\n\npublic policy\n\nVictoria\n\n\n\nA difference-in-differences analysis of Victoria Police’s 2023-24 reception hour reductions across 34 LGAs\n\n\n\n\n\nNov 16, 2026\n\n\nJyovika Aswale\n\n\n\n\n\n\n\n\n\n\n\n\nHow Busy Are Melbourne’s CBD Crossings? A Statistical Deep Dive\n\n\n\nR\n\nStatistics\n\nPedestrian counts\n\nMelbourne\n\n\n\nModelling pedestrian flows at Southern Cross, Flinders Street, and QV Melbourne using probability models, bootstrapping, and confidence intervals.\n\n\n\n\n\nDec 2, 2025\n\n\nJyovika Aswale\n\n\n\n\n\n\n\n\n\n\n\n\nDo Fast Pit Stops Win F1 Races - or Is It Just Hype?\n\n\n\nR\n\nData Analysis\n\nVisualisation\n\nFormula1\n\n\n\nAn R-powered exploration of Formula 1 performance, lap times, and insights.\n\n\n\n\n\nNov 30, 2025\n\n\n\n\n\nNo matching items"
+    "text": "Who Actually Turns Up? Measuring Member Engagement from Event Registrations\n\n\n\nR\n\nShiny\n\ndata cleaning\n\ndashboard\n\ncase study\n\n\n\nAn industry placement case study: turning five years of ticketing exports into a person-level engagement model and an interactive dashboard\n\n\n\n\n\nNov 20, 2026\n\n\nJyovika Aswale\n\n\n\n\n\n\n\n\n\n\n\n\nDid Closing Police Station Counters Increase Crime in Victoria?\n\n\n\nR\n\ncausal inference\n\npublic policy\n\nVictoria\n\n\n\nA difference-in-differences analysis of Victoria Police’s 2023-24 reception hour reductions across 34 LGAs\n\n\n\n\n\nNov 16, 2026\n\n\nJyovika Aswale\n\n\n\n\n\n\n\n\n\n\n\n\nHow Busy Are Melbourne’s CBD Crossings? A Statistical Deep Dive\n\n\n\nR\n\nStatistics\n\nPedestrian counts\n\nMelbourne\n\n\n\nModelling pedestrian flows at Southern Cross, Flinders Street, and QV Melbourne using probability models, bootstrapping, and confidence intervals.\n\n\n\n\n\nDec 2, 2025\n\n\nJyovika Aswale\n\n\n\n\n\n\n\n\n\n\n\n\nDo Fast Pit Stops Win F1 Races - or Is It Just Hype?\n\n\n\nR\n\nData Analysis\n\nVisualisation\n\nFormula1\n\n\n\nAn R-powered exploration of Formula 1 performance, lap times, and insights.\n\n\n\n\n\nNov 30, 2025\n\n\n\n\n\nNo matching items"
   }
 ]

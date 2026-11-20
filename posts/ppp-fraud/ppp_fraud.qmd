@@ -42,4 +42,24 @@ ppp <- read_csv(
 
 The file contains `r format(nrow(ppp), big.mark = ",")` loans and `r ncol(ppp)` columns, approved between `r format(min(ppp$DateApproved, na.rm = TRUE), "%d %B %Y")` and `r format(max(ppp$DateApproved, na.rm = TRUE), "%d %B %Y")`.
 
+## Exploratory data analysis
+
+### Data quality
+
+Before defining any red flags, I checked the fields the flags will depend on: where the borrower is located and how many jobs they reported.
+
+```{r missing-values}
+ppp |>
+  summarise(
+    `Borrower state missing` = sum(is.na(BorrowerState)),
+    `Project state missing`  = sum(is.na(ProjectState)),
+    `Both missing`           = sum(is.na(BorrowerState) & is.na(ProjectState)),
+    `Jobs zero or missing`   = sum(is.na(JobsReported) | JobsReported == 0)
+  ) |>
+  pivot_longer(everything(), names_to = "Check", values_to = "Loans") |>
+  kable(format.args = list(big.mark = ","))
+```
+
+The data is close to complete on these fields. Only a handful of loans are missing a state or a job count, out of almost a million, too few to affect the results, so I leave them as missing rather than trying to fill the gaps. One cleaning step mattered more: some missing values are stored as the text "N/A" rather than left blank. Left as-is, every loan with an "N/A" address would look like it shared one address, creating a fake cluster of borrowers.
+
 

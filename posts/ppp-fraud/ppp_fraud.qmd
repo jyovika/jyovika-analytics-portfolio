@@ -62,4 +62,20 @@ ppp |>
 
 The data is close to complete on these fields. Only a handful of loans are missing a state or a job count, out of almost a million, too few to affect the results, so I leave them as missing rather than trying to fill the gaps. One cleaning step mattered more: some missing values are stored as the text "N/A" rather than left blank. Left as-is, every loan with an "N/A" address would look like it shared one address, creating a fake cluster of borrowers.
 
+### Loan outcomes
+
+The data has no column that says "this loan was fraud". The closest thing is the loan's final status.
+
+```{r loan-status}
+ppp |>
+  count(LoanStatus, sort = TRUE) |>
+  mutate(Share = scales::percent(n / sum(n), accuracy = 0.1)) |>
+  kable(col.names = c("Loan status", "Loans", "Share"),
+        format.args = list(big.mark = ","))
+```
+
+Almost all loans were paid in full, which for PPP mostly means forgiven: `r scales::percent(mean(!is.na(ppp$ForgivenessAmount[ppp$LoanStatus == "Paid in Full"])), accuracy = 0.1)` of paid-in-full loans have a forgiveness amount recorded. A small share were charged off, meaning the lender gave up on recovering the money. A charge-off does not prove fraud, since a genuine business can fail, but fraudulent loans are far more likely to end this way because the borrower never intended to repay or apply for forgiveness. I use charge-offs as a stand-in outcome to test whether the red flags carry real signal.
+
+The third status, "Exemption 4", refers to the Freedom of Information Act exemption for confidential commercial or financial information. The SBA withheld these loans' status under it, a decision [upheld in court](https://infobytes.orrick.com/2021-12-17/district-court-grants-sbas-summary-judgment-covid-19-relief-disclosure-case/) after lenders said they treat loan status as confidential. These loans are not known to be clean, just unknown, so I leave them out when comparing flagged and unflagged loans.
+
 

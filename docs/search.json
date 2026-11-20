@@ -193,7 +193,7 @@
     "href": "index.html",
     "title": "Blogs",
     "section": "",
-    "text": "Did Closing Police Station Counters Increase Crime in Victoria?\n\n\n\nR\n\ncausal inference\n\npublic policy\n\nVictoria\n\n\n\nA difference-in-differences analysis of Victoria Police’s 2023-24 reception hour reductions across 34 LGAs\n\n\n\n\n\nNov 16, 2026\n\n\nJyovika Aswale\n\n\n\n\n\n\n\n\n\n\n\n\nHow Busy Are Melbourne’s CBD Crossings? A Statistical Deep Dive\n\n\n\nR\n\nStatistics\n\nPedestrian counts\n\nMelbourne\n\n\n\nModelling pedestrian flows at Southern Cross, Flinders Street, and QV Melbourne using probability models, bootstrapping, and confidence intervals.\n\n\n\n\n\nDec 2, 2025\n\n\nJyovika Aswale\n\n\n\n\n\n\n\n\n\n\n\n\nDo Fast Pit Stops Win F1 Races - or Is It Just Hype?\n\n\n\nR\n\nData Analysis\n\nVisualisation\n\nFormula1\n\n\n\nAn R-powered exploration of Formula 1 performance, lap times, and insights.\n\n\n\n\n\nNov 30, 2025\n\n\n\n\n\nNo matching items"
+    "text": "Who Actually Turns Up? Measuring Member Engagement from Event Registrations\n\n\n\nR\n\nShiny\n\ndata cleaning\n\ndashboard\n\ncase study\n\n\n\nAn industry placement case study: turning five years of ticketing exports into a person-level engagement model and an interactive dashboard\n\n\n\n\n\nNov 16, 2026\n\n\nJyovika Aswale\n\n\n\n\n\n\n\n\n\n\n\n\nDid Closing Police Station Counters Increase Crime in Victoria?\n\n\n\nR\n\ncausal inference\n\npublic policy\n\nVictoria\n\n\n\nA difference-in-differences analysis of Victoria Police’s 2023-24 reception hour reductions across 34 LGAs\n\n\n\n\n\nNov 16, 2026\n\n\nJyovika Aswale\n\n\n\n\n\n\n\n\n\n\n\n\nHow Busy Are Melbourne’s CBD Crossings? A Statistical Deep Dive\n\n\n\nR\n\nStatistics\n\nPedestrian counts\n\nMelbourne\n\n\n\nModelling pedestrian flows at Southern Cross, Flinders Street, and QV Melbourne using probability models, bootstrapping, and confidence intervals.\n\n\n\n\n\nDec 2, 2025\n\n\nJyovika Aswale\n\n\n\n\n\n\n\n\n\n\n\n\nDo Fast Pit Stops Win F1 Races - or Is It Just Hype?\n\n\n\nR\n\nData Analysis\n\nVisualisation\n\nFormula1\n\n\n\nAn R-powered exploration of Formula 1 performance, lap times, and insights.\n\n\n\n\n\nNov 30, 2025\n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "posts/police_closure/police_station_closure.html#references",
@@ -229,5 +229,47 @@
     "title": "Jyovika Aswale",
     "section": "Outside Work",
     "text": "Outside Work\nI prioritise health and balance: I train regularly and keep learning about nutrition. I also enjoy hands-on creative work, like building LEGO or cooking, and I unwind by rewatching a few of my favourite series."
+  },
+  {
+    "objectID": "posts/member-engagement/member_engagement.html",
+    "href": "posts/member-engagement/member_engagement.html",
+    "title": "Who Actually Turns Up? Measuring Member Engagement from Event Registrations",
+    "section": "",
+    "text": "For my industry placement in the Monash University Master of Business Analytics, I worked with a South Australian peak body for professional educator associations. The organisation could already say which member associations took part in its events. It could not say who attended, how often, or how that compared with last year.\nI built a person-level engagement model and an interactive dashboard from the organisation’s event registration records. Staff can now pick any year and see engagement for individuals, associations and sector cohorts, and the association results agree closely with the records they had been keeping by hand."
+  },
+  {
+    "objectID": "posts/member-engagement/member_engagement.html#in-short",
+    "href": "posts/member-engagement/member_engagement.html#in-short",
+    "title": "Who Actually Turns Up? Measuring Member Engagement from Event Registrations",
+    "section": "",
+    "text": "For my industry placement in the Monash University Master of Business Analytics, I worked with a South Australian peak body for professional educator associations. The organisation could already say which member associations took part in its events. It could not say who attended, how often, or how that compared with last year.\nI built a person-level engagement model and an interactive dashboard from the organisation’s event registration records. Staff can now pick any year and see engagement for individuals, associations and sector cohorts, and the association results agree closely with the records they had been keeping by hand."
+  },
+  {
+    "objectID": "posts/member-engagement/member_engagement.html#the-problem",
+    "href": "posts/member-engagement/member_engagement.html#the-problem",
+    "title": "Who Actually Turns Up? Measuring Member Engagement from Event Registrations",
+    "section": "The problem",
+    "text": "The problem\nEngagement was tracked by hand in a yearly spreadsheet: one tick per association per event. A tick showed that an association took part. It did not show who came or how many times, and one year’s sheet could not be compared with another’s."
+  },
+  {
+    "objectID": "posts/member-engagement/member_engagement.html#my-approach",
+    "href": "posts/member-engagement/member_engagement.html#my-approach",
+    "title": "Who Actually Turns Up? Measuring Member Engagement from Event Registrations",
+    "section": "My approach",
+    "text": "My approach\nGetting to one clean dataset. The raw material was eight overlapping exports from the Humanitix ticketing platform (34,037 rows and 504 columns), plus a membership register and staff review spreadsheets. I deduplicated the exports to 25,217 tickets, kept only member-engagement events, and coalesced about 95 inconsistently named registration-form columns into five clean fields. The final dataset holds 11,890 registrations by 4,211 people across 184 events, from March 2021 to August 2026.\nWorking out who is who. This was the hardest part. There was no reliable unique ID, and email addresses were often shared office accounts. I built a person key from standardised names plus organisation. To merge spelling variants of the same organisation I used Jaro-Winkler fuzzy matching with hierarchical clustering, then added a step that assigns each person their best known organisation. That step alone cut the identity count from 6,282 to 4,249. Staff then reviewed the edge cases.\nKeeping the model simple. My first version was a weighted score combining recency, frequency and tenure. After discussing it with the client, I replaced it with something anyone can explain: the number of events a person attended, in four tiers.\n\n\n\nEvents attended\nTier\n\n\n\n\n1\nDormant\n\n\n2\nAt Risk\n\n\n3 to 5\nEngaged\n\n\n6 or more\nHighly Engaged\n\n\n\nI extended the same idea to associations, using a coverage rate (the share of events with at least one attendee from that association), and to 12 sector cohorts."
+  },
+  {
+    "objectID": "posts/member-engagement/member_engagement.html#the-result",
+    "href": "posts/member-engagement/member_engagement.html#the-result",
+    "title": "Who Actually Turns Up? Measuring Member Engagement from Event Registrations",
+    "section": "The result",
+    "text": "The result\nA model the organisation can trust. Association coverage from my model agreed with the organisation’s own hand-kept records, with rank correlations of 0.91 to 0.92 in each full year.\nA dashboard staff can use. The five-tab R Shiny app recalculates every measure for any year: an overview, association engagement, cohorts, an individual explorer, and a list of committee members who have never attended an event.\nA pipeline that can be rerun. The whole pipeline is written in Quarto. The report renders from small aggregate tables, so it needs no personal data. Along the way I found and fixed a locale-dependent bug that changed row counts between runs."
+  },
+  {
+    "objectID": "posts/member-engagement/member_engagement.html#what-i-learned",
+    "href": "posts/member-engagement/member_engagement.html#what-i-learned",
+    "title": "Who Actually Turns Up? Measuring Member Engagement from Event Registrations",
+    "section": "What I learned",
+    "text": "What I learned\n\nIdentity comes before analysis. Every number downstream depended on deciding who counted as one person, so that is where most of the careful work went.\nThe simpler model was the better one. The weighted score was harder to explain than a count of events, and the client chose the one they could explain.\nCheck against what people already know. Agreement with the hand-kept records is what made the new numbers credible.\nReproducible means the same answer every time. A row count that shifted between runs was a bug worth chasing down.\n\nTools: R, tidyverse, stringdist, Shiny, bslib, plotly, DT, Quarto, Git."
   }
 ]

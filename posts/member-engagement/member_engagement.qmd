@@ -4,6 +4,8 @@ description: "An industry placement case study: turning five years of ticketing 
 author: "Jyovika Aswale"
 date: 2026-11-16
 categories: [R, Shiny, data cleaning, dashboard, case study]
+image: "engagement-thumbnail.jpg"
+title-block-banner: "engagement-banner.jpg"
 ---
 
 ## In short

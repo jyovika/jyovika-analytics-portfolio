@@ -1,0 +1,51 @@
+---
+title: "Who Actually Turns Up? Measuring Member Engagement from Event Registrations"
+description: "An industry placement case study: turning five years of ticketing exports into a person-level engagement model and an interactive dashboard"
+author: "Jyovika Aswale"
+date: 2026-11-16
+categories: [R, Shiny, data cleaning, dashboard, case study]
+---
+
+## In short
+
+For my industry placement in the Monash University Master of Business Analytics, I worked with a South Australian peak body for professional educator associations. The organisation could already say which member associations took part in its events. It could not say who attended, how often, or how that compared with last year.
+
+I built a person-level engagement model and an interactive dashboard from the organisation's event registration records. Staff can now pick any year and see engagement for individuals, associations and sector cohorts, and the association results agree closely with the records they had been keeping by hand.
+
+## The problem
+
+Engagement was tracked by hand in a yearly spreadsheet: one tick per association per event. A tick showed that an association took part. It did not show who came or how many times, and one year's sheet could not be compared with another's.
+
+## My approach
+
+**Getting to one clean dataset.** The raw material was eight overlapping exports from the Humanitix ticketing platform (34,037 rows and 504 columns), plus a membership register and staff review spreadsheets. I deduplicated the exports to 25,217 tickets, kept only member-engagement events, and coalesced about 95 inconsistently named registration-form columns into five clean fields. The final dataset holds 11,890 registrations by 4,211 people across 184 events, from March 2021 to August 2026.
+
+**Working out who is who.** This was the hardest part. There was no reliable unique ID, and email addresses were often shared office accounts. I built a person key from standardised names plus organisation. To merge spelling variants of the same organisation I used Jaro-Winkler fuzzy matching with hierarchical clustering, then added a step that assigns each person their best known organisation. That step alone cut the identity count from 6,282 to 4,249. Staff then reviewed the edge cases.
+
+**Keeping the model simple.** My first version was a weighted score combining recency, frequency and tenure. After discussing it with the client, I replaced it with something anyone can explain: the number of events a person attended, in four tiers.
+
+| Events attended | Tier           |
+|-----------------|----------------|
+| 1               | Dormant        |
+| 2               | At Risk        |
+| 3 to 5          | Engaged        |
+| 6 or more       | Highly Engaged |
+
+I extended the same idea to associations, using a coverage rate (the share of events with at least one attendee from that association), and to 12 sector cohorts.
+
+## The result
+
+**A model the organisation can trust.** Association coverage from my model agreed with the organisation's own hand-kept records, with rank correlations of 0.91 to 0.92 in each full year.
+
+**A dashboard staff can use.** The five-tab R Shiny app recalculates every measure for any year: an overview, association engagement, cohorts, an individual explorer, and a list of committee members who have never attended an event.
+
+**A pipeline that can be rerun.** The whole pipeline is written in Quarto. The report renders from small aggregate tables, so it needs no personal data. Along the way I found and fixed a locale-dependent bug that changed row counts between runs.
+
+## What I learned
+
+-   **Identity comes before analysis.** Every number downstream depended on deciding who counted as one person, so that is where most of the careful work went.
+-   **The simpler model was the better one.** The weighted score was harder to explain than a count of events, and the client chose the one they could explain.
+-   **Check against what people already know.** Agreement with the hand-kept records is what made the new numbers credible.
+-   **Reproducible means the same answer every time.** A row count that shifted between runs was a bug worth chasing down.
+
+**Tools:** R, tidyverse, stringdist, Shiny, bslib, plotly, DT, Quarto, Git.

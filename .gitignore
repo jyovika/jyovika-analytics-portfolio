@@ -53,3 +53,6 @@ rsconnect/
 
 # USDA food data, too large for GitHub
 data/food_nutrition/
+
+# SBA PPP loan data, too large for GitHub
+data/ppp/

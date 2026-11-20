@@ -1,7 +1,7 @@
 README
 ================
 Jyovika Aswale
-2026-11-16
+2026-11-20
 
 # Jyovika Aswale: Analytics Portfolio
 
@@ -27,11 +27,13 @@ I use this portfolio to demonstrate my approach to analysis:
 - Regression and sensitivity analysis
 - Hypothesis testing and confidence interval estimation
 - Exploratory data analysis with tidy workflows
+- Entity resolution and fuzzy matching on messy real-world records
 
 #### Visualisation and Communication
 
 - ggplot2 graphics designed for clarity
 - Diagnostic plots that show how models behave
+- Interactive dashboards built with R Shiny
 - Story driven blog posts published through Quarto
 - Layouts and themes created with custom CSS
 
@@ -106,6 +108,31 @@ A causal analysis of Victoria Police’s 2023-24 reception hour cuts
 
 - Blog: [read it on my
   website](https://jyovika.github.io/jyovika-analytics-portfolio/posts/police_closure/police_station_closure.html)
+
+#### 4. Who Actually Turns Up? Measuring Member Engagement from Event Registrations
+
+An industry placement case study for a South Australian peak body for
+professional educator associations
+
+- Skills: data cleaning, fuzzy matching and entity resolution,
+  engagement modelling, R Shiny dashboards
+
+- Highlights:
+
+  - Eight overlapping ticketing exports (34,037 rows) cleaned into
+    11,890 registrations across 184 events
+
+  - Person-level identity matching with Jaro-Winkler fuzzy matching and
+    hierarchical clustering, cutting 6,282 identities to 4,249
+
+  - A simple four-tier engagement model that agreed with staff records
+    (rank correlations of 0.91 to 0.92)
+
+  - A five-tab Shiny dashboard that recalculates every measure for any
+    year
+
+- Blog: [read it on my
+  website](https://jyovika.github.io/jyovika-analytics-portfolio/posts/member-engagement/member_engagement.html)
 
 ``` bash
 .

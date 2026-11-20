@@ -13,6 +13,13 @@ execute:
 
 ## Background
 
+In March 2020, as COVID-19 lockdowns shut businesses across the United States, Congress created the Paycheck Protection Program (PPP) under the CARES Act. The idea was simple: give small businesses low-interest loans to keep paying their staff, and forgive the loan entirely if the money went to payroll and other eligible costs. The program eventually grew to around [\$800 billion](https://files.gao.gov/reports/GAO-25-107267/index.html).
+
+Speed was the priority. Loans were processed by private lenders, often within days, and borrowers largely self-certified their eligibility, payroll and number of employees. That design got money out quickly, but it also made the program an easy target. In June 2023, the SBA's Office of Inspector General [estimated](https://www.hsgac.senate.gov/subcommittees/etso/hearings/examining-federal-covid-era-spending-and-preventing-future-fraud/ware-testimony) that more than \$64 billion in PPP funds went to potentially fraudulent actors. The SBA [disputed](https://meritalk.com/articles/sba-oig-potentially-fraudulent-covid-loans-topped-200b/) the size of that estimate, but even its own figures pointed to tens of billions of dollars needing investigation.
+
+With hundreds of thousands of loans and limited investigators, the practical question is not "which loans are fraudulent?" but "which loans should be looked at first?". A spreadsheet cannot prove fraud. What it can do is surface patterns that fraud tends to leave behind, known as red flags, so investigators spend their time on the most suspicious cases.
+
+That is what this analysis does. I take the SBA's public data on every PPP loan over \$150,000, define a set of red flags grounded in the program's rules, score each loan against them, and test whether flagged loans were more likely to end up charged off. The aim is triage, not accusation: a flag means a loan deserves a closer look, not that the borrower did anything wrong.
 
 ## Data
 

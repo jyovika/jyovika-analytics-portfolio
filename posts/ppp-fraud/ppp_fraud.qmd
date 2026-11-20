@@ -1,0 +1,38 @@
+---
+title: "Screening PPP Loans for Fraud Red Flags"
+description: "A triage analysis of 968,524 US Paycheck Protection Program loans over $150k"
+author: "Jyovika Aswale"
+date: 2026-11-20
+categories: [R, fraud analytics, financial crime, EDA]
+editor: visual
+execute:
+  echo: false
+  message: false
+  warning: false
+---
+
+## Background
+
+
+## Data
+
+Loan-level data comes from the U.S. Small Business Administration's [PPP FOIA dataset](https://data.sba.gov/dataset/ppp-foia) (public domain). This analysis uses the file of loans of \$150,000 and over (`public_150k_plus_240930.csv`).
+
+```{r libraries}
+library(tidyverse)
+library(lubridate)
+library(knitr)
+```
+
+```{r load-data}
+ppp <- read_csv(
+  here::here("data", "ppp", "public_150k_plus_240930.csv"),
+  na = c("", "NA", "N/A"),
+  col_types = cols(LoanNumber = col_character())
+) |>
+  mutate(across(c(DateApproved, LoanStatusDate, ForgivenessDate), mdy))
+```
+
+The file contains `r format(nrow(ppp), big.mark = ",")` loans and `r ncol(ppp)` columns, approved between `r format(min(ppp$DateApproved, na.rm = TRUE), "%d %B %Y")` and `r format(max(ppp$DateApproved, na.rm = TRUE), "%d %B %Y")`.
+
+

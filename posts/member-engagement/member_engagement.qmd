@@ -54,12 +54,39 @@ Engagement was tracked by hand in a yearly spreadsheet: one tick per association
 
 **Keeping the model simple.** My first version was a weighted score combining recency, frequency and tenure. After discussing it with the client, I replaced it with something anyone can explain: the number of events a person attended, in four tiers.
 
-| Events attended | Tier           |
-|-----------------|----------------|
-| 1               | Dormant        |
-| 2               | At Risk        |
-| 3 to 5          | Engaged        |
-| 6 or more       | Highly Engaged |
+```{=html}
+<table style="width: 100%; border-collapse: collapse; margin: 1rem 0 1.5rem;">
+  <thead>
+    <tr style="background: #006466; color: #ffffff;">
+      <th style="padding: 0.6rem 0.8rem; text-align: left;">Events attended</th>
+      <th style="padding: 0.6rem 0.8rem; text-align: left;">Tier</th>
+      <th style="padding: 0.6rem 0.8rem; text-align: left;">What it means</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr style="border-bottom: 1px solid #dee2e6;">
+      <td style="padding: 0.6rem 0.8rem;">1</td>
+      <td style="padding: 0.6rem 0.8rem;"><span style="background: #e6eeee; color: #004b4d; padding: 0.15rem 0.6rem; border-radius: 6px; white-space: nowrap;">Dormant</span></td>
+      <td style="padding: 0.6rem 0.8rem; color: #6c757d;">Came once</td>
+    </tr>
+    <tr style="border-bottom: 1px solid #dee2e6;">
+      <td style="padding: 0.6rem 0.8rem;">2</td>
+      <td style="padding: 0.6rem 0.8rem;"><span style="background: #b3d1d1; color: #003638; padding: 0.15rem 0.6rem; border-radius: 6px; white-space: nowrap;">At risk</span></td>
+      <td style="padding: 0.6rem 0.8rem; color: #6c757d;">Came back, but not often</td>
+    </tr>
+    <tr style="border-bottom: 1px solid #dee2e6;">
+      <td style="padding: 0.6rem 0.8rem;">3 to 5</td>
+      <td style="padding: 0.6rem 0.8rem;"><span style="background: #3d8a8b; color: #ffffff; padding: 0.15rem 0.6rem; border-radius: 6px; white-space: nowrap;">Engaged</span></td>
+      <td style="padding: 0.6rem 0.8rem; color: #6c757d;">A regular</td>
+    </tr>
+    <tr>
+      <td style="padding: 0.6rem 0.8rem;">6 or more</td>
+      <td style="padding: 0.6rem 0.8rem;"><span style="background: #006466; color: #ffffff; padding: 0.15rem 0.6rem; border-radius: 6px; white-space: nowrap;">Highly engaged</span></td>
+      <td style="padding: 0.6rem 0.8rem; color: #6c757d;">Core of the community</td>
+    </tr>
+  </tbody>
+</table>
+```
 
 I extended the same idea to associations, using a coverage rate (the share of events with at least one attendee from that association), and to 12 sector cohorts.
 

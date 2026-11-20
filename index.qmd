@@ -3,7 +3,9 @@ title: "Blogs"
 title-block-banner: "main-banner.jpg"
 image: "main-banner.jpg"    
 listing:
-  contents: posts
+  contents:
+    - posts
+    - "!posts/food-nutrition/*"  # draft; remove this line when the food post is published
   sort: "date desc"
   type: default
   categories: true

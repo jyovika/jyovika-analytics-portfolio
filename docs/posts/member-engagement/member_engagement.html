@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Jyovika Aswale">
-<meta name="dcterms.date" content="2026-11-16">
+<meta name="dcterms.date" content="2026-11-20">
 <meta name="description" content="An industry placement case study: turning five years of ticketing exports into a person-level engagement model and an interactive dashboard">
 
 <title>Who Actually Turns Up? Measuring Member Engagement from Event Registrations – Jyovika Aswale</title>
@@ -164,7 +164,7 @@ background-size: cover;
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">November 16, 2026</p>
+        <p class="date">November 20, 2026</p>
       </div>
     </div>
     
@@ -206,6 +206,31 @@ background-size: cover;
 </section>
 <section id="my-approach" class="level2">
 <h2 class="anchored" data-anchor-id="my-approach">My approach</h2>
+<figure style="margin: 1.5rem 0;" class="figure">
+<div role="list" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1rem;">
+  <div role="listitem" style="border-top: 4px solid #006466; padding-top: 0.6rem;">
+    <div style="font-size: 0.85rem; color: #6c757d;">1 · Raw exports</div>
+    <div style="font-size: 1.6rem; font-weight: 700; color: #006466;">34,037</div>
+    <div style="font-size: 0.85rem; color: #6c757d;">rows in 8 files</div>
+  </div>
+  <div role="listitem" style="border-top: 4px solid #006466; padding-top: 0.6rem;">
+    <div style="font-size: 0.85rem; color: #6c757d;">2 · Clean</div>
+    <div style="font-size: 1.6rem; font-weight: 700; color: #006466;">11,890</div>
+    <div style="font-size: 0.85rem; color: #6c757d;">registrations, 184 events</div>
+  </div>
+  <div role="listitem" style="border-top: 4px solid #006466; padding-top: 0.6rem;">
+    <div style="font-size: 0.85rem; color: #6c757d;">3 · Match people</div>
+    <div style="font-size: 1.6rem; font-weight: 700; color: #006466;">4,249</div>
+    <div style="font-size: 0.85rem; color: #6c757d;">identities, down from 6,282</div>
+  </div>
+  <div role="listitem" style="border-top: 4px solid #006466; padding-top: 0.6rem;">
+    <div style="font-size: 0.85rem; color: #6c757d;">4 · Score + dashboard</div>
+    <div style="font-size: 1.6rem; font-weight: 700; color: #006466;">4 tiers</div>
+    <div style="font-size: 0.85rem; color: #6c757d;">5-tab Shiny app</div>
+  </div>
+</div>
+<figcaption style="margin-top: 0.75rem; font-size: 0.85rem; color: #6c757d;">From raw ticketing exports to a dashboard staff can use.</figcaption>
+</figure>
 <p><strong>Getting to one clean dataset.</strong> The raw material was eight overlapping exports from the Humanitix ticketing platform (34,037 rows and 504 columns), plus a membership register and staff review spreadsheets. I deduplicated the exports to 25,217 tickets, kept only member-engagement events, and coalesced about 95 inconsistently named registration-form columns into five clean fields. The final dataset holds 11,890 registrations by 4,211 people across 184 events, from March 2021 to August 2026.</p>
 <p><strong>Working out who is who.</strong> This was the hardest part. There was no reliable unique ID, and email addresses were often shared office accounts. I built a person key from standardised names plus organisation. To merge spelling variants of the same organisation I used Jaro-Winkler fuzzy matching with hierarchical clustering, then added a step that assigns each person their best known organisation. That step alone cut the identity count from 6,282 to 4,249. Staff then reviewed the edge cases.</p>
 <p><strong>Keeping the model simple.</strong> My first version was a weighted score combining recency, frequency and tenure. After discussing it with the client, I replaced it with something anyone can explain: the number of events a person attended, in four tiers.</p>

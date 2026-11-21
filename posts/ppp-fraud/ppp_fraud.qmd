@@ -87,15 +87,23 @@ The data is close to complete on these fields. Only a handful of loans are missi
 
 The data has no column that says "this loan was fraud". The closest thing is the loan's final status.
 
-```{r loan-status}
-ppp |>
-  count(LoanStatus, sort = TRUE) |>
-  mutate(Share = scales::percent(n / sum(n), accuracy = 0.1)) |>
-  kable(col.names = c("Loan status", "Loans", "Share"),
-        format.args = list(big.mark = ","))
+```{python}
+#| label: loan-status
+status = (
+    ppp["LoanStatus"]
+    .value_counts()
+    .rename_axis("Loan status")
+    .reset_index(name="Loans")
+)
+status["Share"] = (status["Loans"] / status["Loans"].sum()).map("{:.1%}".format)
+
+paid_in_full = ppp[ppp["LoanStatus"] == "Paid in Full"]
+forgiven_share = paid_in_full["ForgivenessAmount"].notna().mean()
+
+Markdown(status.to_markdown(index=False, intfmt=","))
 ```
 
-Almost all loans were paid in full, which for PPP mostly means forgiven: `r scales::percent(mean(!is.na(ppp$ForgivenessAmount[ppp$LoanStatus == "Paid in Full"])), accuracy = 0.1)` of paid-in-full loans have a forgiveness amount recorded. A small share were charged off, meaning the lender gave up on recovering the money. A charge-off does not prove fraud, since a genuine business can fail, but fraudulent loans are far more likely to end this way because the borrower never intended to repay or apply for forgiveness. I use charge-offs as a stand-in outcome to test whether the red flags carry real signal.
+Almost all loans were paid in full, which for PPP mostly means forgiven: `{python} f"{forgiven_share:.1%}"` of paid-in-full loans have a forgiveness amount recorded. A small share were charged off, meaning the lender gave up on recovering the money. A charge-off does not prove fraud, since a genuine business can fail, but fraudulent loans are far more likely to end this way because the borrower never intended to repay or apply for forgiveness. I use charge-offs as a stand-in outcome to test whether the red flags carry real signal.
 
 The third status, "Exemption 4", refers to the Freedom of Information Act exemption for confidential commercial or financial information. The SBA withheld these loans' status under it, a decision [upheld in court](https://infobytes.orrick.com/2021-12-17/district-court-grants-sbas-summary-judgment-covid-19-relief-disclosure-case/) after lenders said they treat loan status as confidential.
 

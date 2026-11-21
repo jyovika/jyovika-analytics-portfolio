@@ -61,16 +61,24 @@ The file contains `{python} f"{len(ppp):,}"` loans and `{python} ppp.shape[1]` c
 
 Before defining any red flags, I checked the fields the flags will depend on: where the borrower is located and how many jobs they reported.
 
-```{r missing-values}
-ppp |>
-  summarise(
-    `Borrower state missing` = sum(is.na(BorrowerState)),
-    `Project state missing`  = sum(is.na(ProjectState)),
-    `Both missing`           = sum(is.na(BorrowerState) & is.na(ProjectState)),
-    `Jobs zero or missing`   = sum(is.na(JobsReported) | JobsReported == 0)
-  ) |>
-  pivot_longer(everything(), names_to = "Check", values_to = "Loans") |>
-  kable(format.args = list(big.mark = ","))
+```{python}
+#| label: missing-values
+missing = pd.DataFrame({
+    "Check": [
+        "Borrower state missing",
+        "Project state missing",
+        "Both missing",
+        "Jobs zero or missing",
+    ],
+    "Loans": [
+        ppp["BorrowerState"].isna().sum(),
+        ppp["ProjectState"].isna().sum(),
+        (ppp["BorrowerState"].isna() & ppp["ProjectState"].isna()).sum(),
+        (ppp["JobsReported"].isna() | (ppp["JobsReported"] == 0)).sum(),
+    ],
+})
+
+Markdown(missing.to_markdown(index=False, intfmt=","))
 ```
 
 The data is close to complete on these fields. Only a handful of loans are missing a state or a job count, out of almost a million, too few to affect the results, so I leave them as missing rather than trying to fill the gaps. One cleaning step mattered more: some missing values are stored as the text "N/A" rather than left blank. Left as-is, every loan with an "N/A" address would look like it shared one address, creating a fake cluster of borrowers.

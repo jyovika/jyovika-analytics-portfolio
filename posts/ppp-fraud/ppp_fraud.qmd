@@ -3,7 +3,8 @@ title: "Screening PPP Loans for Fraud Red Flags"
 description: "A triage analysis of 968,524 US Paycheck Protection Program loans over $150k"
 author: "Jyovika Aswale"
 date: 2026-11-20
-categories: [R, fraud analytics, financial crime, EDA]
+categories: [Python, fraud analytics, financial crime, EDA]
+jupyter: python3
 execute:
   echo: false
   message: false
@@ -24,22 +25,35 @@ That is what this analysis does. I take the SBA's public data on every PPP loan 
 
 Loan-level data comes from the U.S. Small Business Administration's [PPP FOIA dataset](https://data.sba.gov/dataset/ppp-foia) (public domain). This analysis uses the file of loans of \$150,000 and over (`public_150k_plus_240930.csv`).
 
-```{r libraries}
-library(tidyverse)
-library(lubridate)
-library(knitr)
+```{python}
+#| label: libraries
+import os
+from pathlib import Path
+
+import pandas as pd
+from IPython.display import Markdown
 ```
 
-```{r load-data}
-ppp <- read_csv(
-  here::here("data", "ppp", "public_150k_plus_240930.csv"),
-  na = c("", "NA", "N/A"),
-  col_types = cols(LoanNumber = col_character())
-) |>
-  mutate(across(c(DateApproved, LoanStatusDate, ForgivenessDate), mdy))
+```{python}
+#| label: load-data
+# Quarto runs the post from its own folder; QUARTO_PROJECT_DIR points to the repo root.
+# In an interactive console the working directory is already the repo root.
+project_dir = Path(os.environ.get("QUARTO_PROJECT_DIR", "."))
+
+ppp = pd.read_csv(
+    project_dir / "data" / "ppp" / "public_150k_plus_240930.csv",
+    na_values=["", "NA", "N/A"],
+    dtype={"LoanNumber": str},
+    low_memory=False,
+    # A few business-type and lender names contain mangled dashes that aren't valid UTF-8.
+    encoding_errors="replace",
+)
+
+for col in ["DateApproved", "LoanStatusDate", "ForgivenessDate"]:
+    ppp[col] = pd.to_datetime(ppp[col], format="%m/%d/%Y")
 ```
 
-The file contains `r format(nrow(ppp), big.mark = ",")` loans and `r ncol(ppp)` columns, approved between `r format(min(ppp$DateApproved, na.rm = TRUE), "%d %B %Y")` and `r format(max(ppp$DateApproved, na.rm = TRUE), "%d %B %Y")`.
+The file contains `{python} f"{len(ppp):,}"` loans and `{python} ppp.shape[1]` columns, approved between `{python} ppp["DateApproved"].min().strftime("%d %B %Y")` and `{python} ppp["DateApproved"].max().strftime("%d %B %Y")`.
 
 ## Exploratory data analysis
 

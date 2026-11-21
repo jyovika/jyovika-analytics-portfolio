@@ -4,7 +4,6 @@ description: "A triage analysis of 968,524 US Paycheck Protection Program loans 
 author: "Jyovika Aswale"
 date: 2026-11-20
 categories: [R, fraud analytics, financial crime, EDA]
-editor: visual
 execute:
   echo: false
   message: false
@@ -107,6 +106,55 @@ New businesses (two years old or less) were charged off at `r rate("New Business
 Borrowers who left the question unanswered were also charged off more often than established businesses, at `r rate("Unanswered")`.
 
 The most striking category is "Startup, Loan Funds will Open Business". Taken literally, a business that will open with the loan money was not operating on 15 February 2020 and should not have qualified. But only `r startup$Loans` loans fall in this group, and `r startup$"Charged off"` of them were charged off, a rate close to established businesses. With so few loans the rate is unreliable, and the label may not mean what it says for every borrower. I treat it as a flag worth checking by hand rather than proof of ineligibility.
- These loans are not known to be clean, just unknown, so I leave them out when comparing flagged and unflagged loans.
 
+### Jobs reported
 
+Borrowers reported how many jobs the loan would support. Most businesses in this file are small to mid-sized.
+
+```{r jobs}
+outcome_loans <- ppp |> filter(LoanStatus != "Exemption 4")
+
+quantile(ppp$JobsReported, c(.5, .9, .99), na.rm = TRUE) |>
+  enframe(name = "Percentile", value = "Jobs reported") |>
+  kable()
+
+at_cap <- outcome_loans |>
+  mutate(group = if_else(JobsReported == 500, "Exactly 500 jobs", "Fewer than 500 jobs")) |>
+  filter(!is.na(group)) |>
+  group_by(group) |>
+  summarise(loans = n(), rate = mean(LoanStatus == "Charged Off"))
+pct <- function(x) scales::percent(x, accuracy = 0.1)
+```
+
+Businesses generally needed [500 or fewer employees](https://www.govinfo.gov/content/pkg/FR-2020-04-15/html/2020-07672.htm) to qualify, and no loan in the file reports more than 500 jobs. `r format(sum(ppp$JobsReported == 500, na.rm = TRUE), big.mark = ",")` loans report exactly 500, which could suggest borrowers rounding to the limit. The outcomes do not support that worry: loans at exactly 500 jobs were charged off at `r pct(at_cap$rate[at_cap$group == "Exactly 500 jobs"])`, against `r pct(at_cap$rate[at_cap$group == "Fewer than 500 jobs"])` for everyone else. I do not use it as a red flag.
+
+### Loan amount per job
+
+The job count becomes far more useful when compared with the loan amount. A first-draw loan was capped at 2.5 times average monthly payroll, and pay above \$100,000 per employee per year was [excluded from payroll](https://www.govinfo.gov/content/pkg/FR-2020-04-15/html/2020-07672.htm). That gives a benchmark of about \$20,833 per job (\$100,000 ÷ 12 × 2.5). Hotels and restaurants (industry codes starting with 72) could borrow [3.5 times payroll](https://www.sba.gov/funding-programs/loans/covid-19-relief-options/paycheck-protection-program/second-draw-ppp-loan) on second-draw loans, a benchmark of about \$29,167.
+
+The benchmark is not a hard ceiling. Health insurance, retirement contributions and state payroll taxes were added on top of capped pay, and some borrowers rolled an earlier disaster loan into their PPP loan. A loan slightly above the benchmark is unremarkable. A loan several times above it implies an average salary far beyond what the program allowed.
+
+```{r per-job}
+per_job <- outcome_loans |>
+  filter(JobsReported > 0) |>
+  mutate(
+    naics72   = str_starts(as.character(NAICSCode), "72") %in% TRUE,
+    benchmark = if_else(ProcessingMethod == "PPS" & naics72, 29167, 20833),
+    ratio     = (CurrentApprovalAmount / JobsReported) / benchmark,
+    band      = cut(ratio, c(0, 1, 1.5, 2, Inf),
+                    labels = c("At or below benchmark", "1 to 1.5x", "1.5 to 2x", "More than 2x"))
+  )
+
+per_job |>
+  group_by(band) |>
+  summarise(Loans = n(), `Charge-off rate` = mean(LoanStatus == "Charged Off")) |>
+  ggplot(aes(band, `Charge-off rate`)) +
+  geom_col() +
+  geom_text(aes(label = scales::comma(Loans)), vjust = -0.4, size = 3.5) +
+  scale_y_continuous(labels = scales::percent) +
+  labs(x = "Loan amount per job, relative to benchmark",
+       y = "Charge-off rate",
+       caption = "Labels show the number of loans in each band. Excludes Exemption 4 loans.")
+```
+
+This is the clearest signal so far. The charge-off rate rises steadily as the amount per job moves further above the benchmark, and loans at more than double the benchmark were charged off at `r pct(mean(per_job$LoanStatus[per_job$ratio > 2] == "Charged Off"))`, compared with `r pct(mean(per_job$LoanStatus[per_job$ratio <= 1] == "Charged Off"))` for loans at or below it. Overstating payroll or understating headcount are both ways to get more money than a business qualifies for, and this ratio catches either. These loans are not known to be clean, just unknown, so I leave them out when comparing flagged and unflagged loans.

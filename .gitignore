@@ -56,3 +56,6 @@ data/food_nutrition/
 
 # SBA PPP loan data, too large for GitHub
 data/ppp/
+
+# Editor settings (machine-specific paths)
+.vscode/

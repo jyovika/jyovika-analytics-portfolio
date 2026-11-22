@@ -111,31 +111,39 @@ The third status, "Exemption 4", refers to the Freedom of Information Act exempt
 
 To be eligible, a business had to be [in operation on 15 February 2020](https://www.govinfo.gov/content/pkg/FR-2020-04-15/html/2020-07672.htm). Borrowers described their business age on the application, so this field is a natural place to look for ineligible loans.
 
-```{r business-age}
-age_outcomes <- ppp |>
-  filter(LoanStatus != "Exemption 4", !is.na(BusinessAgeDescription)) |>
-  group_by(BusinessAgeDescription) |>
-  summarise(Loans = n(),
-            `Charged off` = sum(LoanStatus == "Charged Off"),
-            `Charge-off rate` = mean(LoanStatus == "Charged Off")) |>
-  arrange(desc(Loans))
+```{python}
+#| label: business-age
+# Loans with a known outcome: Exemption 4 statuses were withheld, so they can't be scored.
+outcome_loans = ppp[ppp["LoanStatus"] != "Exemption 4"].copy()
+outcome_loans["charged_off"] = outcome_loans["LoanStatus"] == "Charged Off"
 
-age_outcomes |>
-  mutate(`Charge-off rate` = scales::percent(`Charge-off rate`, accuracy = 0.1)) |>
-  kable(col.names = c("Business age", "Loans", "Charged off", "Charge-off rate"),
-        format.args = list(big.mark = ","))
+age_outcomes = (
+    outcome_loans
+    .groupby("BusinessAgeDescription")
+    .agg(
+        loans=("charged_off", "size"),
+        charged_off=("charged_off", "sum"),
+        charge_off_rate=("charged_off", "mean"),
+    )
+    .sort_values("loans", ascending=False)
+)
 
-rate <- function(age) {
-  scales::percent(age_outcomes$`Charge-off rate`[age_outcomes$BusinessAgeDescription == age], accuracy = 0.1)
-}
-startup <- age_outcomes |> filter(BusinessAgeDescription == "Startup, Loan Funds will Open Business")
+def rate(age):
+    return f"{age_outcomes.loc[age, 'charge_off_rate']:.1%}"
+
+startup = "Startup, Loan Funds will Open Business"
+
+table = age_outcomes.reset_index()
+table["charge_off_rate"] = table["charge_off_rate"].map("{:.1%}".format)
+table.columns = ["Business age", "Loans", "Charged off", "Charge-off rate"]
+Markdown(table.to_markdown(index=False, intfmt=","))
 ```
 
-New businesses (two years old or less) were charged off at `r rate("New Business or 2 years or less")`, more than double the `r rate("Existing or more than 2 years old")` rate for established businesses. That makes sense: a young business has less trading history for a lender to check. Still, more than 96% of new-business loans ended paid in full, so on its own this is a weak signal. It is more useful combined with other flags.
+New businesses (two years old or less) were charged off at `{python} rate("New Business or 2 years or less")`, more than double the `{python} rate("Existing or more than 2 years old")` rate for established businesses. That makes sense: a young business has less trading history for a lender to check. Still, more than 96% of new-business loans ended paid in full, so on its own this is a weak signal. It is more useful combined with other flags.
 
-Borrowers who left the question unanswered were also charged off more often than established businesses, at `r rate("Unanswered")`.
+Borrowers who left the question unanswered were also charged off more often than established businesses, at `{python} rate("Unanswered")`.
 
-The most striking category is "Startup, Loan Funds will Open Business". Taken literally, a business that will open with the loan money was not operating on 15 February 2020 and should not have qualified. But only `r startup$Loans` loans fall in this group, and `r startup$"Charged off"` of them were charged off, a rate close to established businesses. With so few loans the rate is unreliable, and the label may not mean what it says for every borrower. I treat it as a flag worth checking by hand rather than proof of ineligibility.
+The most striking category is "Startup, Loan Funds will Open Business". Taken literally, a business that will open with the loan money was not operating on 15 February 2020 and should not have qualified. But only `{python} f"{age_outcomes.loc[startup, 'loans']:,}"` loans fall in this group, and `{python} f"{age_outcomes.loc[startup, 'charged_off']:,}"` of them were charged off, a rate close to established businesses. With so few loans the rate is unreliable, and the label may not mean what it says for every borrower. I treat it as a flag worth checking by hand rather than proof of ineligibility.
 
 ### Jobs reported
 

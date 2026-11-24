@@ -59,3 +59,6 @@ data/ppp/
 
 # Editor settings (machine-specific paths)
 .vscode/
+
+# ARC grants data, downloaded by the grant-classification post
+data/grants/

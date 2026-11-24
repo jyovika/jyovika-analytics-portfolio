@@ -5,5 +5,52 @@ author: "Jyovika Aswale"
 date: 2026-11-24
 categories: [R]
 draft: true
-editor: visual
 ---
+## libraries
+```{r}
+set.seed(5012)
+library(tidyverse)
+library(tidymodels)
+library(knitr)
+```
+
+## load the data
+```{r}
+grants_raw <- read_csv(here::here("data/grants/arc_grants.csv"),
+                       show_col_types = FALSE)
+```
+
+## make the label
+```{r}
+divisions <- c(
+  "06" = "Biological Sciences",
+  "08" = "Information & Computing",
+  "09" = "Engineering",
+  "11" = "Medical & Health",
+  "16" = "Studies in Human Society"
+)
+
+grants <- grants_raw |>
+  filter(!is.na(field_of_research)) |>
+  mutate(division_code = str_sub(field_of_research, 1, 2)) |>
+  filter(division_code %in% names(divisions)) |>
+  distinct(summary, .keep_all = TRUE) |>
+  mutate(division = factor(divisions[division_code])) |>
+  select(code, start_year, division, field_of_research, summary)
+```
+
+## class balance
+```{r}
+grants |>
+  count(division, sort = TRUE) |>
+  mutate(Share = scales::percent(n / sum(n), accuracy = 0.1)) |>
+  kable(col.names = c("Division", "Grants", "Share"),
+        format.args = list(big.mark = ","))
+```
+
+## train/test split
+```{r}
+grant_split  <- initial_split(grants, prop = 0.8, strata = division)
+grants_train <- training(grant_split)
+grants_test  <- testing(grant_split)  
+```

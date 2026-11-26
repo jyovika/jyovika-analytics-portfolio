@@ -8,7 +8,6 @@ draft: true
 ---
 ## libraries
 ```{r}
-set.seed(5012)
 library(tidyverse)
 library(tidymodels)
 library(knitr)
@@ -50,7 +49,50 @@ grants |>
 
 ## train/test split
 ```{r}
+set.seed(5012)
 grant_split  <- initial_split(grants, prop = 0.8, strata = division)
 grants_train <- training(grant_split)
-grants_test  <- testing(grant_split)  
+grants_test  <- testing(grant_split)
+```
+
+## distinctive words
+```{r}
+division_size <- count(grants_train, division, name = "division_grants")
+
+distinctive_words <- grants_train |>
+  mutate(word = str_extract_all(str_to_lower(summary), "[a-z]{3,}")) |>
+  unnest(word) |>
+  distinct(code, division, word) |>
+  filter(!word %in% stopwords::stopwords("en")) |>
+  count(division, word, name = "grants") |>
+  left_join(division_size, by = join_by(division)) |>
+  group_by(word) |>
+  mutate(in_division = grants / division_grants,
+         elsewhere   = (sum(grants) - grants) / (nrow(grants_train) - division_grants)) |>
+  ungroup() |>
+  filter(grants >= 30) |>
+  mutate(ratio = in_division / (elsewhere + 0.001))
+
+distinctive_words |>
+  group_by(division) |>
+  slice_max(ratio, n = 20) |>
+  summarise(top_words = str_c(word, collapse = ", ")) |>
+  kable(col.names = c("Division", "Most distinctive words"))
+```
+
+## keywords
+```{r}
+keywords <- list(
+  "Biological Sciences"      = c("crops", "traits", "species", "evolutionary", "genetics", "genome", "genetic",   "organisms", "genes", "habitat", "biodiversity", "crop", "gene", "ecology", "genomic"),
+
+  "Information & Computing"  = c("privacy", "queries", "graph", "query", "cloud", "commerce", "reasoning", "computing", "analytics", "ict", "software", "retrieval", "automatically", "aware", "internet", "video"),
+
+  "Engineering"              = c("steel", "alloys", "materials", "numerical", "composites", "batteries", "concrete", "fabrication", "alloy", "polymer", "corrosion", "combustion", "thin", "turbulent", "loading"),
+
+  "Medical & Health"         = c("patient", "mental", "chronic", "childhood", "burden", "hospital", "adults", "intervention", "disability", "nervous", "older", "alcohol", "brain", "obesity", "care", "children"),
+  
+  "Studies in Human Society" = c("politics", "political", "democracy", "governance", "democratic", "transnational", "debates", "poverty", "justice", "citizenship", "sociological", "peace", "reform")
+)
+
+
 ```

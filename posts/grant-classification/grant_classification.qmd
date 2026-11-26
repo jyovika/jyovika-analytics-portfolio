@@ -96,3 +96,51 @@ keywords <- list(
 
 
 ```
+
+## classifier
+```{r}
+predict_keywords <- function(text) {
+  text   <- str_to_lower(text)
+  scores <- map(keywords, \(words) str_count(text, str_c("\\b(", str_c(words, collapse = "|"), ")"))) |>
+    as_tibble()
+  top   <- do.call(pmax, scores)
+  n_top <- rowSums(scores == top)
+  if_else(top == 0 | n_top > 1, "Unclassified", names(scores)[max.col(scores, ties.method = "first")])
+}
+```
+
+## score the training set.
+```{r}
+train_kw <- grants_train |>
+  mutate(predicted = predict_keywords(summary),
+         correct   = predicted == as.character(division))
+
+train_kw |>
+  summarise(Coverage = mean(predicted != "Unclassified"),
+            `Accuracy when classified` = mean(correct[predicted != "Unclassified"]),
+            `Overall accuracy` = mean(correct)) |>
+  kable(digits = 3)
+```
+
+## results by division.
+```{r}
+precision <- train_kw |>
+  filter(predicted != "Unclassified") |>
+  group_by(division = predicted) |>
+  summarise(Precision = mean(correct))
+
+train_kw |>
+  group_by(division = as.character(division)) |>
+  summarise(Recall = mean(correct),
+            Unclassified = mean(predicted == "Unclassified")) |>
+  left_join(precision, by = join_by(division)) |>
+  kable(digits = 3)
+```
+
+## the confusion table
+```{r}
+train_kw |>
+  count(division, predicted) |>
+  pivot_wider(names_from = predicted, values_from = n, values_fill = 0) |>
+  kable()
+```
